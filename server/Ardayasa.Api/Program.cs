@@ -103,6 +103,12 @@ if (!isTesting && (app.Environment.IsDevelopment() || app.Configuration.GetValue
         scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
         app.Configuration,
         app.Logger);
+    await ContentSeeder.SeedAsync(
+        db,
+        scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>(),
+        scope.ServiceProvider.GetRequiredService<Ardayasa.Application.Common.Interfaces.IFileStorage>(),
+        Path.Combine(app.Environment.ContentRootPath, "SeedAssets"),
+        app.Logger);
 }
 
 app.UseCors();
