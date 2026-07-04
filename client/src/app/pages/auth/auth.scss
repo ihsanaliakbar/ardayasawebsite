@@ -1,0 +1,36 @@
+.auth-card {
+  max-width: 420px;
+  margin: 32px auto;
+  padding: 24px;
+
+  h1 {
+    font: var(--mat-sys-headline-small);
+    margin: 0 0 16px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .error {
+    color: var(--mat-sys-error);
+    font: var(--mat-sys-body-small);
+    margin: 0 0 8px;
+  }
+
+  .success {
+    color: var(--mat-sys-primary);
+    font: var(--mat-sys-body-medium);
+  }
+
+  .links {
+    margin-top: 16px;
+    font: var(--mat-sys-body-small);
+
+    a {
+      color: var(--mat-sys-primary);
+    }
+  }
+}
