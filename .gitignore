@@ -1,1 +1,31 @@
 screenshots_instagram/
+
+# Environment / secrets
+.env
+*.local.json
+appsettings.*.Local.json
+
+# .NET
+server/**/bin/
+server/**/obj/
+server/**/TestResults/
+*.user
+
+# Angular / Node
+client/node_modules/
+client/dist/
+client/.angular/
+npm-debug.log*
+
+# IDE / OS
+.vs/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Local file storage volume (dev)
+storage/
+
+# Internal working docs (not for the repo)
+CLAUDE.md
+docs/
