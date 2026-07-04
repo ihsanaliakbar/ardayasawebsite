@@ -1,39 +1,169 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+// Global theme: Ardayasa brand (dark teal + gold), Material 3 via `mat.theme`
+// with brand tokens pinned through `mat.theme-overrides`.
+// Palette source: docs/DECISIONS.md (2026-07-04, provided by Ihsan).
 @use '@angular/material' as mat;
+
+:root {
+  // Brand palette — referenced by page styles; Material system tokens are mapped below.
+  --bg-dark: #071c1f;
+  --bg-teal: #0c2f35;
+  --primary: #0c424b;
+  --primary-light: #0b5461;
+  --primary-hover: #21535a;
+  --teal-muted: #669298;
+  --text-main: #f4f6f3;
+  --text-muted: #c6c6bf;
+  --bubble-light: #a3a5a4;
+  --accent-gold: #f4d96f;
+  --accent-gold-dark: #d1bc64;
+
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: Inter, Roboto, 'Helvetica Neue', sans-serif;
+}
 
 html {
   height: 100%;
+
   @include mat.theme(
     (
       color: (
-        primary: mat.$azure-palette,
-        tertiary: mat.$blue-palette,
+        primary: mat.$cyan-palette,
+        tertiary: mat.$yellow-palette,
+        theme-type: dark,
       ),
-      typography: Roboto,
+      typography: (
+        plain-family: Inter,
+        brand-family: 'Playfair Display',
+      ),
       density: 0,
+    )
+  );
+
+  // Pin the Material system tokens to the exact brand colors.
+  @include mat.theme-overrides(
+    (
+      primary: #f4d96f,
+      on-primary: #071c1f,
+      primary-container: #0b5461,
+      on-primary-container: #f4f6f3,
+      secondary: #669298,
+      on-secondary: #071c1f,
+      secondary-container: #21535a,
+      on-secondary-container: #f4f6f3,
+      tertiary: #f4d96f,
+      on-tertiary: #071c1f,
+      background: #071c1f,
+      surface: #0c2f35,
+      on-surface: #f4f6f3,
+      on-surface-variant: #c6c6bf,
+      surface-dim: #071c1f,
+      surface-bright: #21535a,
+      surface-container-lowest: #071c1f,
+      surface-container-low: #0a2a30,
+      surface-container: #0c2f35,
+      surface-container-high: #0c424b,
+      surface-container-highest: #0b5461,
+      inverse-surface: #f4f6f3,
+      inverse-on-surface: #0c2f35,
+      inverse-primary: #0c424b,
+      outline: #669298,
+      outline-variant: #21535a,
     )
   );
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
+  color-scheme: dark;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
   font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
+  font-family: var(--font-body);
   margin: 0;
   height: 100%;
+  -webkit-font-smoothing: antialiased;
 }
-/* You can add global styles to this file, and also import other style files */
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+a {
+  color: var(--accent-gold);
+}
+
+// --- Shared marketing-page building blocks ---
+
+.page-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  text-align: center;
+  margin: 0 0 8px;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin: 0 0 32px;
+}
+
+.card-panel {
+  background: linear-gradient(160deg, var(--bg-teal), rgba(12, 66, 75, 0.55));
+  border: 1px solid rgba(102, 146, 152, 0.25);
+  border-radius: 16px;
+}
+
+.gold-text {
+  color: var(--accent-gold);
+}
+
+// Rendered rich text (articles, FAQ answers) — content is server-sanitized.
+.rich-text {
+  color: var(--text-main);
+  line-height: 1.75;
+
+  p {
+    margin: 0 0 1em;
+  }
+
+  h2,
+  h3 {
+    margin: 1.4em 0 0.5em;
+  }
+
+  ul,
+  ol {
+    padding-left: 1.4em;
+    margin: 0 0 1em;
+  }
+
+  li {
+    margin-bottom: 0.35em;
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent-gold);
+    margin: 1em 0;
+    padding: 0.25em 0 0.25em 1em;
+    color: var(--text-muted);
+  }
+
+  a {
+    color: var(--accent-gold);
+  }
+}
