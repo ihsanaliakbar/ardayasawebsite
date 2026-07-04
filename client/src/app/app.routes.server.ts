@@ -5,6 +5,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'akun', renderMode: RenderMode.Client },
   { path: 'psikolog', renderMode: RenderMode.Client },
   { path: 'admin', renderMode: RenderMode.Client },
+  { path: 'admin/**', renderMode: RenderMode.Client },
   // Public routes are server-rendered for SEO.
   { path: '**', renderMode: RenderMode.Server },
 ];
