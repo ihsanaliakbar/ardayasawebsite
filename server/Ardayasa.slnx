@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Ardayasa.Api/Ardayasa.Api.csproj" />
+  <Project Path="Ardayasa.Application/Ardayasa.Application.csproj" />
+  <Project Path="Ardayasa.Domain/Ardayasa.Domain.csproj" />
+  <Project Path="Ardayasa.Infrastructure/Ardayasa.Infrastructure.csproj" />
+  <Project Path="Ardayasa.Tests/Ardayasa.Tests.csproj" />
+</Solution>
