@@ -23,6 +23,11 @@
     "@angular/router": "^22.0.0",
     "@angular/ssr": "^22.0.5",
     "@ngx-translate/core": "^18.0.0",
+    "@tiptap/core": "^3.27.1",
+    "@tiptap/extension-image": "^3.27.1",
+    "@tiptap/extension-link": "^3.27.1",
+    "@tiptap/extension-placeholder": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

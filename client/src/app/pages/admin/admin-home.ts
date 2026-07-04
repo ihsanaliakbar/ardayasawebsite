@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -21,12 +22,10 @@ interface PsychologistRow {
 @Component({
   selector: 'app-admin-home',
   imports: [
-    ReactiveFormsModule, MatCardModule, MatFormFieldModule,
+    ReactiveFormsModule, RouterLink, MatCardModule, MatFormFieldModule,
     MatInputModule, MatButtonModule, TranslatePipe,
   ],
   template: `
-    <h1>{{ 'admin.title' | translate }}</h1>
-
     <mat-card class="panel">
       <h2>{{ 'admin.psychologists.inviteTitle' | translate }}</h2>
       <form [formGroup]="inviteForm" (ngSubmit)="invite()">
@@ -76,6 +75,9 @@ interface PsychologistRow {
                 {{ 'admin.psychologists.resend' | translate }}
               </button>
             }
+            <a mat-stroked-button [routerLink]="['/admin/psikolog', p.id]">
+              {{ 'admin.psychologists.editProfile' | translate }}
+            </a>
           </div>
         </div>
       }
