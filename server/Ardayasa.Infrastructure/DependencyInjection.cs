@@ -1,7 +1,9 @@
 using Ardayasa.Application.Auth;
 using Ardayasa.Application.Common.Interfaces;
+using Ardayasa.Application.Content;
 using Ardayasa.Application.Psychologists;
 using Ardayasa.Infrastructure.Auth;
+using Ardayasa.Infrastructure.Content;
 using Ardayasa.Infrastructure.Email;
 using Ardayasa.Infrastructure.Files;
 using Ardayasa.Infrastructure.Identity;
@@ -48,6 +50,10 @@ public static class DependencyInjection
         services.AddScoped<JwtTokenService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IPsychologistAdminService, PsychologistAdminService>();
+        services.AddScoped<IPsychologistProfileService, PsychologistProfileService>();
+        services.AddScoped<IPublicContentService, PublicContentService>();
+        services.AddScoped<IContentAdminService, ContentAdminService>();
+        services.AddSingleton<IContentSanitizer, HtmlContentSanitizer>();
         services.AddScoped<IAuditLogger, EfAuditLogger>();
         services.AddSingleton<IFileStorage, LocalFileStorage>();
 
