@@ -1,0 +1,119 @@
+{
+  "app": {
+    "title": "Ardayasa Wellbeing and Growth Center",
+    "tagline": "Ruang aman untuk bertumbuh"
+  },
+  "nav": {
+    "home": "Beranda",
+    "services": "Layanan",
+    "psychologists": "Psikolog",
+    "articles": "Artikel",
+    "faq": "FAQ",
+    "about": "Tentang Kami",
+    "login": "Masuk",
+    "register": "Daftar",
+    "logout": "Keluar",
+    "account": "Akun Saya",
+    "admin": "Dasbor Admin",
+    "psychologist": "Dasbor Psikolog"
+  },
+  "home": {
+    "heroTitle": "Ruang aman untuk bertumbuh",
+    "heroSubtitle": "Layanan konseling psikologi profesional di Bogor — tatap muka maupun online.",
+    "cta": "Buat Janji Konsultasi",
+    "comingSoon": "Situs sedang dalam pengembangan. Konten lengkap segera hadir."
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Kata Sandi",
+    "login": {
+      "title": "Masuk",
+      "submit": "Masuk",
+      "noAccount": "Belum punya akun?",
+      "registerLink": "Daftar di sini",
+      "forgot": "Lupa kata sandi?",
+      "resendVerification": "Kirim ulang email verifikasi",
+      "verificationSent": "Email verifikasi telah dikirim ulang. Silakan cek kotak masuk Anda."
+    },
+    "register": {
+      "title": "Daftar",
+      "fullName": "Nama Lengkap",
+      "whatsapp": "Nomor WhatsApp",
+      "submit": "Daftar",
+      "success": "Pendaftaran berhasil. Silakan cek email Anda untuk tautan verifikasi.",
+      "haveAccount": "Sudah punya akun?",
+      "loginLink": "Masuk di sini"
+    },
+    "verify": {
+      "title": "Verifikasi Email",
+      "verifying": "Memverifikasi email Anda…",
+      "success": "Email berhasil diverifikasi. Silakan masuk.",
+      "failed": "Verifikasi gagal. Tautan tidak valid atau sudah kedaluwarsa."
+    },
+    "forgot": {
+      "title": "Lupa Kata Sandi",
+      "submit": "Kirim Tautan",
+      "success": "Jika email terdaftar, tautan pengaturan ulang kata sandi telah dikirim."
+    },
+    "reset": {
+      "title": "Atur Ulang Kata Sandi",
+      "newPassword": "Kata Sandi Baru",
+      "submit": "Simpan Kata Sandi",
+      "success": "Kata sandi berhasil diubah. Silakan masuk."
+    },
+    "invite": {
+      "title": "Terima Undangan",
+      "intro": "Selamat bergabung! Silakan atur kata sandi untuk akun psikolog Anda.",
+      "submit": "Aktifkan Akun",
+      "success": "Akun berhasil diaktifkan. Silakan masuk dengan kata sandi baru Anda."
+    }
+  },
+  "account": {
+    "title": "Akun Saya",
+    "welcome": "Halo, {{name}}",
+    "email": "Email",
+    "whatsapp": "Nomor WhatsApp",
+    "roles": "Peran"
+  },
+  "admin": {
+    "title": "Dasbor Admin",
+    "psychologists": {
+      "title": "Psikolog",
+      "inviteTitle": "Undang Psikolog Baru",
+      "fullName": "Nama Lengkap",
+      "email": "Email",
+      "professionalTitle": "Gelar / Kredensial",
+      "inviteSubmit": "Kirim Undangan",
+      "invited": "Undangan terkirim.",
+      "resend": "Kirim Ulang",
+      "resent": "Undangan dikirim ulang.",
+      "statusAccepted": "Aktif",
+      "statusPending": "Menunggu Undangan",
+      "empty": "Belum ada psikolog."
+    }
+  },
+  "psych": {
+    "title": "Dasbor Psikolog",
+    "comingSoon": "Fitur ketersediaan jadwal dan kelola sesi akan hadir di fase berikutnya."
+  },
+  "apiErrors": {
+    "generic": "Terjadi kesalahan. Silakan coba lagi.",
+    "auth_invalid_credentials": "Email atau kata sandi salah.",
+    "auth_email_not_verified": "Email Anda belum diverifikasi. Silakan cek kotak masuk Anda.",
+    "auth_account_inactive": "Akun Anda tidak aktif. Silakan hubungi kami.",
+    "auth_locked_out": "Terlalu banyak percobaan gagal. Coba lagi dalam beberapa menit.",
+    "auth_email_taken": "Email ini sudah terdaftar.",
+    "auth_invalid_token": "Tautan tidak valid atau sudah kedaluwarsa.",
+    "auth_invalid_refresh_token": "Sesi Anda telah berakhir. Silakan masuk kembali.",
+    "auth_google_not_configured": "Masuk dengan Google belum tersedia.",
+    "auth_google_token_invalid": "Gagal memverifikasi akun Google Anda.",
+    "auth_user_not_found": "Akun tidak ditemukan.",
+    "auth_invitation_already_accepted": "Undangan ini sudah pernah digunakan.",
+    "identity_PasswordTooShort": "Kata sandi minimal 8 karakter.",
+    "identity_PasswordRequiresLower": "Kata sandi harus memuat huruf kecil.",
+    "identity_PasswordRequiresUpper": "Kata sandi harus memuat huruf besar.",
+    "identity_PasswordRequiresDigit": "Kata sandi harus memuat angka.",
+    "identity_DuplicateEmail": "Email ini sudah terdaftar.",
+    "identity_InvalidToken": "Tautan tidak valid atau sudah kedaluwarsa."
+  }
+}
