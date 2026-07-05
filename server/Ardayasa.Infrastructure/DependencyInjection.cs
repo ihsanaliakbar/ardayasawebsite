@@ -1,6 +1,7 @@
 using Ardayasa.Application.Auth;
 using Ardayasa.Application.Common.Interfaces;
 using Ardayasa.Application.Content;
+using Ardayasa.Application.Patients;
 using Ardayasa.Application.Psychologists;
 using Ardayasa.Infrastructure.Auth;
 using Ardayasa.Infrastructure.Content;
@@ -8,6 +9,7 @@ using Ardayasa.Infrastructure.Email;
 using Ardayasa.Infrastructure.Files;
 using Ardayasa.Infrastructure.Identity;
 using Ardayasa.Infrastructure.Options;
+using Ardayasa.Infrastructure.Patients;
 using Ardayasa.Infrastructure.Persistence;
 using Ardayasa.Infrastructure.Psychologists;
 using Ardayasa.Infrastructure.WhatsApp;
@@ -51,6 +53,8 @@ public static class DependencyInjection
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IPsychologistAdminService, PsychologistAdminService>();
         services.AddScoped<IPsychologistProfileService, PsychologistProfileService>();
+        services.AddScoped<IPatientProfileService, PatientProfileService>();
+        services.AddScoped<IPatientAssignmentService, PatientAssignmentService>();
         services.AddScoped<IPublicContentService, PublicContentService>();
         services.AddScoped<IContentAdminService, ContentAdminService>();
         services.AddSingleton<IContentSanitizer, HtmlContentSanitizer>();
