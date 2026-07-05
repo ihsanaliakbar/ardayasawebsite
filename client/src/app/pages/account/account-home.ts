@@ -84,10 +84,14 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
       display: flex; flex-direction: row; align-items: center; gap: 16px;
       border-left: 4px solid var(--accent-gold);
     }
-    .banner mat-icon { color: var(--accent-gold); }
+    .banner mat-icon { color: var(--accent-gold); flex-shrink: 0; }
     .banner-title { font: var(--mat-sys-title-medium); margin: 0; }
     .banner-text { color: var(--mat-sys-on-surface-variant); font-size: 0.9rem; margin: 4px 0 0; }
     .banner a { margin-left: auto; flex-shrink: 0; }
+    @media (max-width: 600px) {
+      .banner { flex-direction: column; align-items: center; }
+      .banner a { margin-left: 0; }
+    }
     .profile { padding: 24px; max-width: 640px; margin: 0 auto 16px; }
     .welcome { font: var(--mat-sys-title-medium); margin-top: 0; }
     dt { font: var(--mat-sys-label-large); color: var(--mat-sys-on-surface-variant); }
