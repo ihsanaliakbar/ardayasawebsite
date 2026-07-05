@@ -63,7 +63,7 @@ import { SeoService } from '../../core/seo';
     .expertise { margin: 0 0 10px; padding-left: 18px; color: var(--text-muted); font-size: 0.82rem; }
     .expertise li { margin-bottom: 2px; }
     .expertise .more { list-style: none; color: var(--teal-muted); }
-    .profile-link { color: var(--accent-gold); font-size: 0.85rem; }
+    .profile-link { color: var(--accent-gold); font-size: 0.85rem; display: flex; gap: .5rem;}
   `,
 })
 export class PsychologistsPage {
