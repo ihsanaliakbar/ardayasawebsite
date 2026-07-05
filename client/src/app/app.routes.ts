@@ -27,9 +27,19 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/account/account-home').then((m) => m.AccountHome),
       },
       {
+        path: 'akun/data-pribadi',
+        canActivate: [roleGuard(ROLE_PATIENT)],
+        loadComponent: () => import('./pages/account/patient-profile-page').then((m) => m.PatientProfilePage),
+      },
+      {
         path: 'psikolog',
         canActivate: [roleGuard(ROLE_PSYCHOLOGIST, ROLE_ADMIN)],
         loadComponent: () => import('./pages/psychologist/psych-home').then((m) => m.PsychHome),
+      },
+      {
+        path: 'psikolog/pasien/:id',
+        canActivate: [roleGuard(ROLE_PSYCHOLOGIST)],
+        loadComponent: () => import('./pages/psychologist/psych-patient-detail').then((m) => m.PsychPatientDetail),
       },
       {
         path: 'admin',
@@ -44,6 +54,7 @@ export const routes: Routes = [
           { path: 'faq', loadComponent: () => import('./pages/admin/faq-admin').then((m) => m.FaqAdmin) },
           { path: 'testimoni', loadComponent: () => import('./pages/admin/testimonials-admin').then((m) => m.TestimonialsAdmin) },
           { path: 'layanan', loadComponent: () => import('./pages/admin/services-admin').then((m) => m.ServicesAdmin) },
+          { path: 'pasien', loadComponent: () => import('./pages/admin/patients-admin').then((m) => m.PatientsAdmin) },
         ],
       },
     ],
