@@ -144,7 +144,7 @@
   "psych": {
     "title": "Dasbor Psikolog",
     "profileTitle": "Profil Publik Saya",
-    "profileHint": "Profil ini tampil di halaman Psikolog Kami pada situs publik.",
+    "profileHint": "Profil ini tampil di halaman Psikolog Kami pada situs publik. Perubahan data profil dilakukan oleh admin — hubungi admin jika ada data yang perlu diperbarui.",
     "comingSoon": "Fitur ketersediaan jadwal dan kelola sesi akan hadir di fase berikutnya.",
     "patients": {
       "title": "Pasien Saya",

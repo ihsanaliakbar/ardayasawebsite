@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output, signal } from '@angular/core';
+import { Component, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -35,8 +35,9 @@ export interface ProfileSavePayload {
 }
 
 /**
- * Profile editor shared by the psychologist dashboard (own profile) and the
- * admin area (any profile). List fields are edited one-item-per-line.
+ * Profile editor used by the admin area only — psychologist profiles are
+ * admin-managed (psychologists get a read-only view on their dashboard).
+ * List fields are edited one-item-per-line.
  */
 @Component({
   selector: 'app-psychologist-profile-form',
@@ -98,15 +99,13 @@ export interface ProfileSavePayload {
         <mat-hint>{{ 'profileForm.linesHint' | translate }}</mat-hint>
       </mat-form-field>
 
-      @if (adminMode()) {
-        <div class="admin-row">
-          <mat-form-field appearance="outline" class="order-field">
-            <mat-label>{{ 'profileForm.displayOrder' | translate }}</mat-label>
-            <input matInput type="number" formControlName="displayOrder" />
-          </mat-form-field>
-          <mat-checkbox formControlName="isActive">{{ 'profileForm.isActive' | translate }}</mat-checkbox>
-        </div>
-      }
+      <div class="admin-row">
+        <mat-form-field appearance="outline" class="order-field">
+          <mat-label>{{ 'profileForm.displayOrder' | translate }}</mat-label>
+          <input matInput type="number" formControlName="displayOrder" />
+        </mat-form-field>
+        <mat-checkbox formControlName="isActive">{{ 'profileForm.isActive' | translate }}</mat-checkbox>
+      </div>
 
       <button mat-flat-button type="submit" [disabled]="form.invalid || busy()">
         {{ 'profileForm.save' | translate }}
@@ -129,7 +128,6 @@ export class PsychologistProfileForm {
   private readonly fb = inject(FormBuilder);
 
   readonly profile = input.required<PsychologistProfile>();
-  readonly adminMode = input(false);
   readonly busy = input(false);
   readonly save = output<ProfileSavePayload>();
   readonly photoSelected = output<File>();
@@ -177,8 +175,8 @@ export class PsychologistProfileForm {
       expertise: toLines(value.expertise),
       bio: value.bio.trim() || null,
       scheduleLines: toLines(value.scheduleLines),
-      displayOrder: this.adminMode() ? value.displayOrder : null,
-      isActive: this.adminMode() ? value.isActive : null,
+      displayOrder: value.displayOrder,
+      isActive: value.isActive,
     });
   }
 

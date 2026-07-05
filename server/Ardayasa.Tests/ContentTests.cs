@@ -7,8 +7,8 @@ namespace Ardayasa.Tests;
 
 /// <summary>
 /// Phase 1 content: public read endpoints are anonymous, admin CRUD is role-guarded,
-/// draft/publish rules hold, HTML is sanitized, and psychologists can edit only
-/// their own profile.
+/// draft/publish rules hold, HTML is sanitized, and psychologist profiles are
+/// read-only for psychologists (admin is the only editor).
 /// </summary>
 public class ContentTests(TestWebApplicationFactory factory) : IClassFixture<TestWebApplicationFactory>
 {
@@ -172,7 +172,7 @@ public class ContentTests(TestWebApplicationFactory factory) : IClassFixture<Tes
     }
 
     [Fact]
-    public async Task PsychologistProfile_OwnEditOnly_AndPublicAfterProfileSave()
+    public async Task PsychologistProfile_ReadOnlyForPsychologist_AdminIsOnlyEditor()
     {
         var client = factory.CreateApiClient();
         var adminToken = await LoginAsync(client, TestWebApplicationFactory.AdminEmail, TestWebApplicationFactory.AdminPassword);
@@ -208,34 +208,35 @@ public class ContentTests(TestWebApplicationFactory factory) : IClassFixture<Tes
         forbidden.Headers.Authorization = new AuthenticationHeaderValue("Bearer", patientToken);
         Assert.Equal(HttpStatusCode.Forbidden, (await client.SendAsync(forbidden)).StatusCode);
 
-        // Psychologist updates own profile; admin-only fields are ignored
-        var update = await SendJsonAsync(client, HttpMethod.Put, "/api/psychologist/profile", psychologistToken, new
+        // Psychologist can read their own profile but has no write endpoint
+        var ownGet = new HttpRequestMessage(HttpMethod.Get, "/api/psychologist/profile");
+        ownGet.Headers.Authorization = new AuthenticationHeaderValue("Bearer", psychologistToken);
+        var ownResponse = await client.SendAsync(ownGet);
+        Assert.Equal(HttpStatusCode.OK, ownResponse.StatusCode);
+        var ownProfile = await ownResponse.Content.ReadFromJsonAsync<ProfileBody>();
+        Assert.NotNull(ownProfile);
+
+        var selfUpdate = await SendJsonAsync(client, HttpMethod.Put, "/api/psychologist/profile", psychologistToken, new
         {
-            displayName = "Dewi Lestari",
-            title = "M.Psi., Psikolog",
-            specialization = "Psikolog Klinis Dewasa",
-            education = new[] { "Sarjana Psikologi, Universitas Indonesia" },
-            expertise = new[] { "Kecemasan", "Depresi" },
-            bio = "Berpengalaman mendampingi klien dewasa.",
-            scheduleLines = new[] { "Senin 09.00–13.00 WIB" },
-            displayOrder = 99,
-            isActive = false, // must be ignored on the self-service endpoint
+            displayName = "Dewi Diubah",
+            education = Array.Empty<string>(),
+            expertise = Array.Empty<string>(),
+            scheduleLines = Array.Empty<string>(),
         });
-        Assert.Equal(HttpStatusCode.OK, update.StatusCode);
-        var profile = await update.Content.ReadFromJsonAsync<ProfileBody>();
-        Assert.NotNull(profile);
-        Assert.Equal("dewi-lestari", profile.Slug);
-        Assert.True(profile.IsActive);
-        Assert.Equal(0, profile.DisplayOrder);
+        Assert.Equal(HttpStatusCode.MethodNotAllowed, selfUpdate.StatusCode);
 
-        // Now publicly listed with a working detail page
-        var after = await client.GetFromJsonAsync<PublicPsychologistBody[]>("/api/psychologists");
-        Assert.NotNull(after);
-        Assert.Contains(after, p => p.Slug == "dewi-lestari");
-        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/api/psychologists/dewi-lestari")).StatusCode);
+        // Psychologist cannot use the admin edit endpoint either
+        var psychAsAdmin = await SendJsonAsync(client, HttpMethod.Put, $"/api/admin/psychologists/{ownProfile.Id}/profile", psychologistToken, new
+        {
+            displayName = "Dewi Diubah",
+            education = Array.Empty<string>(),
+            expertise = Array.Empty<string>(),
+            scheduleLines = Array.Empty<string>(),
+        });
+        Assert.Equal(HttpStatusCode.Forbidden, psychAsAdmin.StatusCode);
 
-        // Admin can edit the same profile on the psychologist's behalf, including admin-only fields
-        var adminUpdate = await SendJsonAsync(client, HttpMethod.Put, $"/api/admin/psychologists/{profile.Id}/profile", adminToken, new
+        // Admin edits the profile; slug is generated on first save and the profile goes public
+        var adminUpdate = await SendJsonAsync(client, HttpMethod.Put, $"/api/admin/psychologists/{ownProfile.Id}/profile", adminToken, new
         {
             displayName = "Dewi Lestari",
             title = "M.Psi., Psikolog",
@@ -250,8 +251,22 @@ public class ContentTests(TestWebApplicationFactory factory) : IClassFixture<Tes
         Assert.Equal(HttpStatusCode.OK, adminUpdate.StatusCode);
         var adminProfile = await adminUpdate.Content.ReadFromJsonAsync<ProfileBody>();
         Assert.NotNull(adminProfile);
+        Assert.Equal("dewi-lestari", adminProfile.Slug);
         Assert.Equal(2, adminProfile.DisplayOrder);
         Assert.Equal(3, adminProfile.Expertise.Length);
+
+        // Now publicly listed with a working detail page
+        var after = await client.GetFromJsonAsync<PublicPsychologistBody[]>("/api/psychologists");
+        Assert.NotNull(after);
+        Assert.Contains(after, p => p.Slug == "dewi-lestari");
+        Assert.Equal(HttpStatusCode.OK, (await client.GetAsync("/api/psychologists/dewi-lestari")).StatusCode);
+
+        // Psychologist sees the admin's changes on their read-only dashboard view
+        var refreshedGet = new HttpRequestMessage(HttpMethod.Get, "/api/psychologist/profile");
+        refreshedGet.Headers.Authorization = new AuthenticationHeaderValue("Bearer", psychologistToken);
+        var refreshed = await (await client.SendAsync(refreshedGet)).Content.ReadFromJsonAsync<ProfileBody>();
+        Assert.NotNull(refreshed);
+        Assert.Equal("Psikolog Klinis Dewasa", refreshed.Specialization);
     }
 
     private async Task<string> RegisterPatientAsync(HttpClient client, string email)

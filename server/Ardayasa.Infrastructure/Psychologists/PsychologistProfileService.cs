@@ -25,19 +25,6 @@ public class PsychologistProfileService(
         return p is null ? null : ToDto(p);
     }
 
-    public async Task<Result<PsychologistProfileDto>> UpdateOwnAsync(Guid userId, UpdatePsychologistProfileRequest request, CancellationToken ct = default)
-    {
-        var p = await db.Psychologists.FirstOrDefaultAsync(x => x.UserId == userId, ct);
-        if (p is null)
-        {
-            return Result<PsychologistProfileDto>.Failure(ContentErrors.NotFound);
-        }
-
-        await ApplyAsync(p, request, isAdmin: false, ct);
-        await db.SaveChangesAsync(ct);
-        return Result<PsychologistProfileDto>.Success(ToDto(p));
-    }
-
     public async Task<Result<PsychologistProfileDto>> UpdateAsync(Guid psychologistId, UpdatePsychologistProfileRequest request, Guid actorUserId, CancellationToken ct = default)
     {
         var p = await db.Psychologists.FirstOrDefaultAsync(x => x.Id == psychologistId, ct);
@@ -46,18 +33,10 @@ public class PsychologistProfileService(
             return Result<PsychologistProfileDto>.Failure(ContentErrors.NotFound);
         }
 
-        await ApplyAsync(p, request, isAdmin: true, ct);
+        await ApplyAsync(p, request, ct);
         await db.SaveChangesAsync(ct);
         await audit.LogAsync(actorUserId, "psychologist.profile_updated", nameof(Psychologist), p.Id.ToString(), new { p.DisplayName }, ct);
         return Result<PsychologistProfileDto>.Success(ToDto(p));
-    }
-
-    public async Task<Result<PsychologistProfileDto>> SetOwnPhotoAsync(Guid userId, Stream content, string fileName, CancellationToken ct = default)
-    {
-        var p = await db.Psychologists.FirstOrDefaultAsync(x => x.UserId == userId, ct);
-        return p is null
-            ? Result<PsychologistProfileDto>.Failure(ContentErrors.NotFound)
-            : await SetPhotoCoreAsync(p, content, fileName, ct);
     }
 
     public async Task<Result<PsychologistProfileDto>> SetPhotoAsync(Guid psychologistId, Stream content, string fileName, Guid actorUserId, CancellationToken ct = default)
@@ -101,7 +80,7 @@ public class PsychologistProfileService(
         return Result<PsychologistProfileDto>.Success(ToDto(p));
     }
 
-    private async Task ApplyAsync(Psychologist p, UpdatePsychologistProfileRequest request, bool isAdmin, CancellationToken ct)
+    private async Task ApplyAsync(Psychologist p, UpdatePsychologistProfileRequest request, CancellationToken ct)
     {
         p.DisplayName = request.DisplayName.Trim();
         p.Title = request.Title?.Trim();
@@ -110,12 +89,8 @@ public class PsychologistProfileService(
         p.Expertise = CleanList(request.Expertise);
         p.Bio = request.Bio?.Trim();
         p.ScheduleLines = CleanList(request.ScheduleLines);
-
-        if (isAdmin)
-        {
-            p.DisplayOrder = request.DisplayOrder ?? p.DisplayOrder;
-            p.IsActive = request.IsActive ?? p.IsActive;
-        }
+        p.DisplayOrder = request.DisplayOrder ?? p.DisplayOrder;
+        p.IsActive = request.IsActive ?? p.IsActive;
 
         // The public profile page needs a slug; generate one from the name on first
         // profile save and keep it stable afterwards (URLs shouldn't churn on rename).

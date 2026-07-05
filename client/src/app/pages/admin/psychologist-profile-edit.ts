@@ -29,7 +29,6 @@ import {
         }
         <app-psychologist-profile-form
           [profile]="p"
-          [adminMode]="true"
           [busy]="busy()"
           (save)="save(p, $event)"
           (photoSelected)="uploadPhoto(p, $event)"

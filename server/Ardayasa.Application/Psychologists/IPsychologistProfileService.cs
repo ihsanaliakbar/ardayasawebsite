@@ -3,8 +3,8 @@ using Ardayasa.Application.Common;
 namespace Ardayasa.Application.Psychologists;
 
 /// <summary>
-/// Profile management: self-service for psychologists (own record only) and
-/// admin-on-behalf for any record (SPEC §3).
+/// Profile management: psychologists read their own record; all edits are
+/// admin-only (SPEC §3, clinic decision 2026-07-05).
 /// </summary>
 public interface IPsychologistProfileService
 {
@@ -12,12 +12,8 @@ public interface IPsychologistProfileService
 
     Task<PsychologistProfileDto?> GetByIdAsync(Guid psychologistId, CancellationToken ct = default);
 
-    Task<Result<PsychologistProfileDto>> UpdateOwnAsync(Guid userId, UpdatePsychologistProfileRequest request, CancellationToken ct = default);
-
     Task<Result<PsychologistProfileDto>> UpdateAsync(Guid psychologistId, UpdatePsychologistProfileRequest request, Guid actorUserId, CancellationToken ct = default);
 
-    /// <summary>Stores the photo via IFileStorage and updates the record. Self-service overload uses the caller's own record.</summary>
-    Task<Result<PsychologistProfileDto>> SetOwnPhotoAsync(Guid userId, Stream content, string fileName, CancellationToken ct = default);
-
+    /// <summary>Stores the photo via IFileStorage and updates the record.</summary>
     Task<Result<PsychologistProfileDto>> SetPhotoAsync(Guid psychologistId, Stream content, string fileName, Guid actorUserId, CancellationToken ct = default);
 }
