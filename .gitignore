@@ -26,6 +26,3 @@ Thumbs.db
 # Local file storage volume (dev)
 storage/
 
-# Internal working docs (not for the repo)
-CLAUDE.md
-docs/
