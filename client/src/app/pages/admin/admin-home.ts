@@ -98,7 +98,7 @@ interface PsychologistRow {
     form { display: flex; flex-direction: column; gap: 4px; }
     .error { color: var(--mat-sys-error); font: var(--mat-sys-body-small); margin: 0 0 8px; }
     .success { color: var(--mat-sys-primary); font: var(--mat-sys-body-small); margin: 0 0 8px; }
-    .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--mat-sys-outline-variant); }
+    .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--mat-sys-outline-variant); }
     .row:last-child { border-bottom: none; }
     .row-main { display: flex; align-items: center; gap: 16px; }
     .row-main img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
