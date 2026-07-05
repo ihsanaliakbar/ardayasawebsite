@@ -27,6 +27,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     public DbSet<Testimonial> Testimonials => Set<Testimonial>();
 
+    public DbSet<PatientProfile> PatientProfiles => Set<PatientProfile>();
+
+    public DbSet<PatientAssignment> PatientAssignments => Set<PatientAssignment>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -115,6 +119,40 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 .WithMany()
                 .HasForeignKey(t => t.PsychologistId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<PatientProfile>(e =>
+        {
+            e.HasKey(p => p.UserId);
+            e.Property(p => p.FullName).HasMaxLength(200);
+            e.Property(p => p.BirthPlace).HasMaxLength(200);
+            e.Property(p => p.Gender).HasConversion<string>().HasMaxLength(20);
+            e.Property(p => p.DomicileAddress).HasMaxLength(1000);
+            e.Property(p => p.MaritalStatus).HasConversion<string>().HasMaxLength(20);
+            e.Property(p => p.LastEducation).HasConversion<string>().HasMaxLength(30);
+            e.Property(p => p.Occupation).HasMaxLength(200);
+            e.Property(p => p.PriorDiagnosis).HasMaxLength(2000);
+            e.Property(p => p.ConsultationConcerns).HasMaxLength(4000);
+            e.Property(p => p.CounselingExpectations).HasMaxLength(4000);
+            e.HasOne<ApplicationUser>()
+                .WithOne()
+                .HasForeignKey<PatientProfile>(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<PatientAssignment>(e =>
+        {
+            // The unique index is the DB-level guarantee against duplicate assignments.
+            e.HasIndex(a => new { a.PatientUserId, a.PsychologistId }).IsUnique();
+            e.HasIndex(a => a.PsychologistId);
+            e.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(a => a.PatientUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(a => a.Psychologist)
+                .WithMany()
+                .HasForeignKey(a => a.PsychologistId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<AuditLog>(e =>
