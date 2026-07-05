@@ -130,7 +130,7 @@ import { CLINIC } from '../core/clinic';
 
     .menu-toggle { display: none; margin-left: auto; }
 
-    @media (max-width: 960px) {
+    @media (max-width: 1100px) {
       .menu-toggle { display: inline-flex; }
       .nav {
         display: none; position: absolute; top: 68px; left: 0; right: 0;

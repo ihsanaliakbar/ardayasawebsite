@@ -90,7 +90,7 @@ import { SeoService } from '../../core/seo';
     .service-prices { display: flex; gap: 20px; flex-shrink: 0; }
     .price { font-weight: 600; color: var(--text-main); display: flex; flex-direction: column; align-items: flex-end; }
     .price-label { font-size: 0.7rem; font-weight: 400; color: var(--teal-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .overtime-note { color: var(--text-muted); font-size: 0.85rem; max-width: 80ch; }
+    .overtime-note { color: var(--text-muted); font-size: 0.85rem; }
     .overtime-note mat-icon { vertical-align: -3px; margin-right: 4px; color: var(--accent-gold); }
     .cta { text-align: center; margin-top: 32px; }
     .gold-btn { --mat-button-filled-container-color: var(--accent-gold); --mat-button-filled-label-text-color: #071c1f; font-weight: 600; }
