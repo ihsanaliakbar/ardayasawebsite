@@ -38,6 +38,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class AdminLayout {
   protected readonly tabs = [
     { path: '/admin', icon: 'group', label: 'admin.tabs.psychologists', exact: true },
+    { path: '/admin/pasien', icon: 'people_alt', label: 'admin.tabs.patients', exact: true },
     { path: '/admin/artikel', icon: 'article', label: 'admin.tabs.articles', exact: false },
     { path: '/admin/faq', icon: 'quiz', label: 'admin.tabs.faq', exact: true },
     { path: '/admin/testimoni', icon: 'reviews', label: 'admin.tabs.testimonials', exact: true },

@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Ardayasa.Api.Infrastructure;
 using Ardayasa.Infrastructure;
@@ -15,7 +16,10 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    // Enums cross the API as their names ("Male", "Married"), never numbers;
+    // the client maps the names to Indonesian labels in id.json.
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddHealthChecks();
 
 // --- JWT bearer authentication ---

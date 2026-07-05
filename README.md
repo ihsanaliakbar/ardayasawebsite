@@ -24,7 +24,19 @@ docker compose up --build
 - Postgres: localhost:5432
 
 EF Core migrations apply automatically on API start in Development; a default admin
-(`ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`) is seeded on first run.
+(`ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env`) and the marketing content (psychologist
+profiles, service catalog, FAQ, testimonials, sample articles) are seeded on first run.
+Content seeding is per-table and only runs when a table is empty, so admin edits are
+never overwritten.
+
+### Stop / restart
+
+```bash
+docker compose down             # stop (keeps the database)
+docker compose up -d            # start again (no rebuild)
+docker compose up --build -d    # start after code changes (rebuild images)
+docker compose down -v          # full reset: deletes the database volume; re-seeds on next start
+```
 
 ## Development (host)
 
