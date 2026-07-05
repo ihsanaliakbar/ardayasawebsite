@@ -93,7 +93,7 @@ interface PsychologistOption {
   `,
   styles: `
     h2 { font: var(--mat-sys-title-large); margin-top: 0; }
-    .panel { padding: 24px; margin-bottom: 24px; max-width: 860px; }
+    .panel { padding: 24px; margin-bottom: 24px; }
     .hint { color: var(--mat-sys-on-surface-variant); font-size: 0.9rem; }
     .error { color: var(--mat-sys-error); font: var(--mat-sys-body-small); }
     .search { width: 100%; max-width: 360px; }

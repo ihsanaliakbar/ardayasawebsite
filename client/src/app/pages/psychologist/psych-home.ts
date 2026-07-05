@@ -17,7 +17,7 @@ import {
   imports: [RouterLink, MatButtonModule, MatCardModule, PsychologistProfileForm, TranslatePipe],
   template: `
     <div class="page-container page">
-      <h1>{{ 'psych.title' | translate }}</h1>
+      <h1 class="section-title">{{ 'psych.title' | translate }}</h1>
 
       <mat-card class="panel">
         <h2>{{ 'psych.profileTitle' | translate }}</h2>
@@ -68,9 +68,9 @@ import {
   `,
   styles: `
     .page { padding-top: 32px; }
-    h1 { font: var(--mat-sys-headline-medium); font-family: var(--font-display); }
+    .section-title { margin-bottom: 24px; }
     h2 { margin-top: 0; }
-    .panel { padding: 24px; margin-bottom: 24px; max-width: 720px; }
+    .panel { padding: 24px; margin: 0 auto 24px; max-width: 720px; }
     .hint { color: var(--mat-sys-on-surface-variant); font-size: 0.9rem; }
     .error { color: var(--mat-sys-error); }
     .success { color: var(--accent-gold); }

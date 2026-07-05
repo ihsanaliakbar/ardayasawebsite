@@ -5,6 +5,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { TranslatePipe } from '@ngx-translate/core';
 import { errorKeyFromResponse } from '../../core/api-error';
@@ -15,6 +16,7 @@ interface PsychologistRow {
   displayName: string;
   title: string | null;
   email: string;
+  photoUrl: string | null;
   isActive: boolean;
   invitationAccepted: boolean;
 }
@@ -23,7 +25,7 @@ interface PsychologistRow {
   selector: 'app-admin-home',
   imports: [
     ReactiveFormsModule, RouterLink, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatButtonModule, TranslatePipe,
+    MatIconModule, MatInputModule, MatButtonModule, TranslatePipe,
   ],
   template: `
     <mat-card class="panel">
@@ -60,11 +62,18 @@ interface PsychologistRow {
       }
       @for (p of psychologists(); track p.id) {
         <div class="row">
-          <div>
-            <strong>{{ p.displayName }}</strong>
-            @if (p.title) { <span class="muted"> — {{ p.title }}</span> }
-            <br />
-            <span class="muted">{{ p.email }}</span>
+          <div class="row-main">
+            @if (p.photoUrl) {
+              <img [src]="p.photoUrl" [alt]="p.displayName" />
+            } @else {
+              <mat-icon class="avatar-fallback">person</mat-icon>
+            }
+            <div>
+              <strong>{{ p.displayName }}</strong>
+              @if (p.title) { <span class="muted"> — {{ p.title }}</span> }
+              <br />
+              <span class="muted">{{ p.email }}</span>
+            </div>
           </div>
           <div class="row-actions">
             @if (p.invitationAccepted) {
@@ -84,14 +93,16 @@ interface PsychologistRow {
     </mat-card>
   `,
   styles: `
-    h1 { font: var(--mat-sys-headline-medium); }
     h2 { font: var(--mat-sys-title-large); margin-top: 0; }
-    .panel { padding: 24px; margin-bottom: 24px; max-width: 640px; }
+    .panel { padding: 24px; margin-bottom: 24px; }
     form { display: flex; flex-direction: column; gap: 4px; }
     .error { color: var(--mat-sys-error); font: var(--mat-sys-body-small); margin: 0 0 8px; }
     .success { color: var(--mat-sys-primary); font: var(--mat-sys-body-small); margin: 0 0 8px; }
     .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--mat-sys-outline-variant); }
     .row:last-child { border-bottom: none; }
+    .row-main { display: flex; align-items: center; gap: 16px; }
+    .row-main img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+    .avatar-fallback { width: 48px; height: 48px; font-size: 48px; color: var(--mat-sys-outline); }
     .row-actions { display: flex; align-items: center; gap: 8px; }
     .muted { color: var(--mat-sys-on-surface-variant); font: var(--mat-sys-body-small); }
     .badge { font: var(--mat-sys-label-medium); padding: 4px 10px; border-radius: 12px; }

@@ -10,6 +10,7 @@ public record PsychologistDto(
     string DisplayName,
     string? Title,
     string Email,
+    string? PhotoUrl,
     bool IsActive,
     bool InvitationAccepted);
 

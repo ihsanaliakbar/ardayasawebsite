@@ -13,7 +13,8 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
   selector: 'app-account-home',
   imports: [RouterLink, MatCardModule, MatButtonModule, MatIconModule, TranslatePipe],
   template: `
-    <h1>{{ 'account.title' | translate }}</h1>
+    <div class="page-container page">
+    <h1 class="section-title">{{ 'account.title' | translate }}</h1>
 
     @if (isPatient && intakeIncomplete()) {
       <mat-card class="banner">
@@ -72,12 +73,14 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
         }
       </mat-card>
     }
+    </div>
   `,
   styles: `
-    h1 { font: var(--mat-sys-headline-medium); }
+    .page { padding-top: 32px; }
+    .section-title { margin-bottom: 24px; }
     h2 { font: var(--mat-sys-title-large); margin-top: 0; }
     .banner {
-      padding: 20px 24px; max-width: 640px; margin-bottom: 16px;
+      padding: 20px 24px; max-width: 640px; margin: 0 auto 16px;
       display: flex; flex-direction: row; align-items: center; gap: 16px;
       border-left: 4px solid var(--accent-gold);
     }
@@ -85,7 +88,7 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
     .banner-title { font: var(--mat-sys-title-medium); margin: 0; }
     .banner-text { color: var(--mat-sys-on-surface-variant); font-size: 0.9rem; margin: 4px 0 0; }
     .banner a { margin-left: auto; flex-shrink: 0; }
-    .profile { padding: 24px; max-width: 640px; margin-bottom: 16px; }
+    .profile { padding: 24px; max-width: 640px; margin: 0 auto 16px; }
     .welcome { font: var(--mat-sys-title-medium); margin-top: 0; }
     dt { font: var(--mat-sys-label-large); color: var(--mat-sys-on-surface-variant); }
     dd { margin: 0 0 12px; }

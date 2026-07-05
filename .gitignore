@@ -1,4 +1,5 @@
 screenshots_instagram/
+screenshot_website/
 
 # Environment / secrets
 .env

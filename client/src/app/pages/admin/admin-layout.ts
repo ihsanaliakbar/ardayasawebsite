@@ -8,7 +8,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [RouterLink, RouterLinkActive, RouterOutlet, MatIconModule, TranslatePipe],
   template: `
     <div class="page-container admin">
-      <h1>{{ 'admin.title' | translate }}</h1>
+      <h1 class="section-title">{{ 'admin.title' | translate }}</h1>
       <nav class="tabs">
         @for (tab of tabs; track tab.path) {
           <a
@@ -23,9 +23,10 @@ import { TranslatePipe } from '@ngx-translate/core';
   `,
   styles: `
     .admin { padding-top: 32px; }
-    h1 { font: var(--mat-sys-headline-medium); font-family: var(--font-display); }
+    .section-title { margin-bottom: 24px; }
     .tabs {
-      display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--mat-sys-outline-variant);
+      display: flex; gap: 4px; flex-wrap: wrap; justify-content: space-around;
+      border-bottom: 1px solid var(--mat-sys-outline-variant);
       margin-bottom: 24px;
     }
     .tabs a {

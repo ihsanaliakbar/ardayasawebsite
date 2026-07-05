@@ -4,6 +4,7 @@ using Ardayasa.Application.Psychologists;
 using Ardayasa.Domain;
 using Ardayasa.Domain.Entities;
 using Ardayasa.Infrastructure.Auth;
+using Ardayasa.Infrastructure.Content;
 using Ardayasa.Infrastructure.Email;
 using Ardayasa.Infrastructure.Identity;
 using Ardayasa.Infrastructure.Options;
@@ -116,5 +117,5 @@ public class PsychologistAdminService(
     }
 
     private static PsychologistDto ToDto(Psychologist p, ApplicationUser u, bool invitationAccepted)
-        => new(p.Id, p.UserId, p.DisplayName, p.Title, u.Email!, p.IsActive, invitationAccepted);
+        => new(p.Id, p.UserId, p.DisplayName, p.Title, u.Email!, FileUrl.From(p.PhotoKey), p.IsActive, invitationAccepted);
 }
