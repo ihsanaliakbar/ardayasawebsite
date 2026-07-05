@@ -4,6 +4,10 @@
     "subtitle": "Psikologi & Konseling",
     "tagline": "Tempat aman untuk didengar, dipahami, dan tumbuh"
   },
+  "common": {
+    "yes": "Ya",
+    "no": "Tidak"
+  },
   "nav": {
     "home": "Beranda",
     "services": "Layanan",
@@ -141,7 +145,21 @@
     "title": "Dasbor Psikolog",
     "profileTitle": "Profil Publik Saya",
     "profileHint": "Profil ini tampil di halaman Psikolog Kami pada situs publik.",
-    "comingSoon": "Fitur ketersediaan jadwal dan kelola sesi akan hadir di fase berikutnya."
+    "comingSoon": "Fitur ketersediaan jadwal dan kelola sesi akan hadir di fase berikutnya.",
+    "patients": {
+      "title": "Pasien Saya",
+      "hint": "Pasien yang ditugaskan kepada Anda oleh admin. Data pribadi pasien bersifat rahasia.",
+      "empty": "Belum ada pasien yang ditugaskan kepada Anda.",
+      "intakeIncomplete": "Data belum lengkap",
+      "view": "Lihat Data"
+    },
+    "patientDetail": {
+      "contactTitle": "Kontak",
+      "assignedSince": "Ditugaskan sejak",
+      "noIntake": "Pasien belum mengisi formulir data pribadi.",
+      "notFoundTitle": "Pasien tidak ditemukan",
+      "notFoundText": "Pasien ini tidak ada atau tidak ditugaskan kepada Anda."
+    }
   },
   "auth": {
     "email": "Email",
@@ -193,7 +211,59 @@
     "welcome": "Halo, {{name}}",
     "email": "Email",
     "whatsapp": "Nomor WhatsApp",
-    "roles": "Peran"
+    "roles": "Peran",
+    "editIntake": "Lengkapi / Ubah Data Pribadi",
+    "intakeBanner": {
+      "title": "Lengkapi Data Pribadi Anda",
+      "text": "Data ini membantu psikolog memahami kebutuhan Anda dan hanya dapat dilihat oleh psikolog yang menangani Anda.",
+      "cta": "Isi Sekarang"
+    },
+    "myPsychologists": {
+      "title": "Psikolog Saya",
+      "empty": "Belum ada psikolog yang ditugaskan untuk Anda.",
+      "viewProfile": "Lihat Profil"
+    }
+  },
+  "patientProfile": {
+    "title": "Data Pribadi",
+    "privacyNote": "Data ini bersifat rahasia dan hanya dapat dilihat oleh Anda dan psikolog yang ditugaskan menangani Anda.",
+    "fullName": "Nama",
+    "birthPlace": "Tempat Lahir",
+    "birthDate": "Tanggal Lahir",
+    "birthPlaceDate": "Tempat, Tanggal Lahir",
+    "gender": "Jenis Kelamin",
+    "domicileAddress": "Alamat Domisili",
+    "maritalStatus": "Status Pernikahan",
+    "lastEducation": "Pendidikan Terakhir",
+    "occupation": "Pekerjaan",
+    "hasAccessedServices": "Apakah Anda pernah mengakses layanan psikologi sebelumnya?",
+    "hasPriorDiagnosis": "Apakah Anda pernah mendapatkan diagnosis dari psikolog atau psikiater?",
+    "priorDiagnosis": "Diagnosis yang didapatkan",
+    "consultationConcerns": "Gambaran khusus yang ingin dikonsultasikan dengan psikolog",
+    "counselingExpectations": "Harapan menjalani konseling di Ardayasa",
+    "submit": "Simpan",
+    "saved": "Data pribadi tersimpan."
+  },
+  "enums": {
+    "gender": {
+      "Male": "Laki-laki",
+      "Female": "Perempuan"
+    },
+    "maritalStatus": {
+      "Single": "Belum Menikah",
+      "Married": "Menikah",
+      "Divorced": "Cerai Hidup",
+      "Widowed": "Cerai Mati"
+    },
+    "education": {
+      "ElementarySchool": "SD",
+      "JuniorHighSchool": "SMP",
+      "SeniorHighSchool": "SMA/SMK",
+      "Diploma": "Diploma (D1–D3)",
+      "Bachelor": "S1/D4",
+      "Master": "S2",
+      "Doctorate": "S3"
+    }
   },
   "admin": {
     "title": "Dasbor Admin",
@@ -207,6 +277,7 @@
     "sortOrder": "Urutan",
     "tabs": {
       "psychologists": "Psikolog",
+      "patients": "Pasien",
       "articles": "Artikel",
       "faq": "FAQ",
       "testimonials": "Testimoni",
@@ -264,6 +335,16 @@
       "rating": "Rating",
       "psychologist": "Psikolog Terkait"
     },
+    "patients": {
+      "title": "Kelola Pasien",
+      "privacyNote": "Formulir data pribadi pasien hanya dapat dilihat oleh psikolog yang ditugaskan — tidak oleh admin.",
+      "search": "Cari nama atau email",
+      "empty": "Tidak ada pasien ditemukan.",
+      "intakeComplete": "Data lengkap",
+      "intakeIncomplete": "Data belum lengkap",
+      "assign": "Tugaskan psikolog",
+      "unassign": "Hapus penugasan"
+    },
     "services": {
       "title": "Kelola Layanan & Harga",
       "newItem": "Tambah Layanan",
@@ -298,6 +379,12 @@
     "content_invalid_rating": "Rating harus antara 1 sampai 5.",
     "content_psychologist_not_found": "Psikolog tidak ditemukan.",
     "content_invalid_file": "Berkas harus berupa gambar (jpg/png/webp) dan maksimal 5 MB.",
+    "patients_name_required": "Nama wajib diisi.",
+    "patients_diagnosis_required": "Mohon isi diagnosis yang pernah didapatkan.",
+    "patients_patient_not_found": "Pasien tidak ditemukan.",
+    "patients_psychologist_not_found": "Psikolog tidak ditemukan.",
+    "patients_already_assigned": "Pasien sudah ditugaskan ke psikolog ini.",
+    "patients_assignment_not_found": "Penugasan tidak ditemukan.",
     "identity_PasswordTooShort": "Kata sandi minimal 8 karakter.",
     "identity_PasswordRequiresLower": "Kata sandi harus memuat huruf kecil.",
     "identity_PasswordRequiresUpper": "Kata sandi harus memuat huruf besar.",
