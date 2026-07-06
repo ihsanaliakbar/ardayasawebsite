@@ -31,6 +31,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     public DbSet<PatientAssignment> PatientAssignments => Set<PatientAssignment>();
 
+    public DbSet<LogbookEntry> LogbookEntries => Set<LogbookEntry>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -153,6 +155,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 .WithMany()
                 .HasForeignKey(a => a.PsychologistId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<LogbookEntry>(e =>
+        {
+            e.HasIndex(l => l.PatientUserId);
+            e.Property(l => l.CaseSummary).HasMaxLength(4000);
+            e.Property(l => l.SessionActivities).HasMaxLength(4000);
+            e.Property(l => l.Homework).HasMaxLength(4000);
+            e.Property(l => l.NextSessionPlan).HasMaxLength(4000);
+            e.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(l => l.PatientUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            // Entries must survive the author's unassignment and outlive staff churn:
+            // Restrict, so a psychologist with logbook history can't be hard-deleted.
+            e.HasOne(l => l.AuthorPsychologist)
+                .WithMany()
+                .HasForeignKey(l => l.AuthorPsychologistId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         builder.Entity<AuditLog>(e =>

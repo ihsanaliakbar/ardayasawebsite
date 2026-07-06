@@ -55,6 +55,7 @@ public static class DependencyInjection
         services.AddScoped<IPsychologistProfileService, PsychologistProfileService>();
         services.AddScoped<IPatientProfileService, PatientProfileService>();
         services.AddScoped<IPatientAssignmentService, PatientAssignmentService>();
+        services.AddScoped<ILogbookService, LogbookService>();
         services.AddScoped<IPublicContentService, PublicContentService>();
         services.AddScoped<IContentAdminService, ContentAdminService>();
         services.AddSingleton<IContentSanitizer, HtmlContentSanitizer>();
