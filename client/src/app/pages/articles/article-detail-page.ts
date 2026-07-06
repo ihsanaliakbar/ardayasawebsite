@@ -15,7 +15,7 @@ import { SeoService } from '../../core/seo';
     @if (article(); as a) {
       <article class="page-container page">
         <a routerLink="/artikel" class="back">
-          <mat-icon inline>arrow_back</mat-icon> {{ 'articles.backToList' | translate }}
+          <mat-icon inline>arrow_back_ios</mat-icon> {{ 'articles.backToList' | translate }}
         </a>
 
         <header>

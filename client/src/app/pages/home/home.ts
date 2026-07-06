@@ -20,7 +20,7 @@ import { SeoService } from '../../core/seo';
           <p class="hero-sub">{{ 'home.heroSubtitle' | translate }}</p>
           <div class="hero-actions">
             <a mat-flat-button class="gold-btn" [href]="clinic.whatsAppUrl" target="_blank" rel="noopener">
-              {{ 'home.ctaConsult' | translate }} <mat-icon>arrow_forward</mat-icon>
+              {{ 'home.ctaConsult' | translate }}
             </a>
             <a mat-stroked-button routerLink="/layanan">{{ 'home.ctaServices' | translate }}</a>
           </div>
@@ -47,7 +47,7 @@ import { SeoService } from '../../core/seo';
             <h3>{{ card.title | translate }}</h3>
             <p>{{ card.text | translate }}</p>
             <a routerLink="/layanan" class="more-link">
-              {{ 'home.more' | translate }} <mat-icon inline>arrow_forward</mat-icon>
+              {{ 'home.more' | translate }} <mat-icon inline>arrow_forward_ios</mat-icon>
             </a>
           </div>
         }
@@ -199,14 +199,14 @@ import { SeoService } from '../../core/seo';
     }
     .service-card h3 { margin: 0 0 10px; font-size: 1.15rem; }
     .service-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; flex: 1; }
-    .more-link { color: var(--accent-gold); text-decoration: none; font-size: 0.9rem; margin-top: 14px; }
+    .more-link { color: var(--accent-gold); text-decoration: none; font-size: 0.9rem; margin-top: 14px; display: flex; gap: 8px;}
 
     /* Stats */
     .stats { display: grid; grid-template-columns: repeat(3, 1fr); padding: 28px 24px; gap: 20px; }
     .stat { display: flex; align-items: center; gap: 14px; justify-content: center; }
     .stat > mat-icon { color: var(--accent-gold); font-size: 32px; width: 32px; height: 32px; }
     .stat-value { font-family: var(--font-display); font-size: 1.7rem; font-weight: 700; color: var(--accent-gold); }
-    .stat-label { color: var(--text-muted); font-size: 0.85rem; }
+    .stat-label { color: var(--text-muted); font-size: 0.85rem; margin-top: 8px;}
 
     /* Psychologists row */
     .psych-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; }

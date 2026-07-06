@@ -71,7 +71,7 @@ interface ArticleFilter {
                 @if (article.excerpt) {
                   <p>{{ article.excerpt }}</p>
                 }
-                <span class="read-more">{{ 'articles.readMore' | translate }} <mat-icon inline>arrow_forward</mat-icon></span>
+                <span class="read-more">{{ 'articles.readMore' | translate }} <mat-icon inline>arrow_forward_ios</mat-icon></span>
               </div>
             </a>
           }
@@ -120,7 +120,7 @@ interface ArticleFilter {
     .category { color: var(--accent-gold); }
     h2 { font-size: 1.1rem; margin: 0 0 8px; line-height: 1.4; }
     .body p { color: var(--text-muted); font-size: 0.875rem; line-height: 1.6; flex: 1; margin: 0 0 12px; }
-    .read-more { color: var(--accent-gold); font-size: 0.85rem; }
+    .read-more { color: var(--accent-gold); font-size: 0.85rem; display: flex; gap: 8px; }
     .empty { text-align: center; color: var(--text-muted); padding: 40px 0; }
     .pagination { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 32px; color: var(--text-muted); }
   `,

@@ -16,7 +16,7 @@ import { SeoService } from '../../core/seo';
     @if (psychologist(); as p) {
       <div class="page-container page">
         <a routerLink="/psikolog-kami" class="back">
-          <mat-icon inline>arrow_back</mat-icon> {{ 'psychologists.backToList' | translate }}
+          <mat-icon inline>arrow_back_ios</mat-icon> {{ 'psychologists.backToList' | translate }}
         </a>
 
         <div class="layout">

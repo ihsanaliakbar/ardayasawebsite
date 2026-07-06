@@ -74,7 +74,7 @@ import { SeoService } from '../../core/seo';
     .milestones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
     .milestone { padding: 28px 24px; text-align: center; border: 1px solid rgba(244, 217, 111, 0.3); }
     .value { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; color: var(--accent-gold); }
-    .label { font-weight: 600; margin: 4px 0 8px; }
+    .label { font-weight: 600; margin: 12px 0 8px; }
     .milestone p { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
 
     .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }

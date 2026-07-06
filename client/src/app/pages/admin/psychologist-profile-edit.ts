@@ -17,7 +17,7 @@ import {
   selector: 'app-psychologist-profile-edit',
   imports: [RouterLink, MatCardModule, MatIconModule, PsychologistProfileForm, TranslatePipe],
   template: `
-    <a routerLink="/admin" class="back"><mat-icon inline>arrow_back</mat-icon> {{ 'admin.psychologists.title' | translate }}</a>
+    <a routerLink="/admin" class="back"><mat-icon inline>arrow_back_ios</mat-icon> {{ 'admin.psychologists.title' | translate }}</a>
     @if (current(); as p) {
       <mat-card class="panel">
         <h2>{{ 'admin.psychologists.editProfileTitle' | translate: { name: p.displayName } }}</h2>

@@ -36,7 +36,7 @@ import { SeoService } from '../../core/seo';
                 }
               </ul>
               <span class="profile-link">
-                {{ 'psychologists.viewProfile' | translate }} <mat-icon inline>arrow_forward</mat-icon>
+                {{ 'psychologists.viewProfile' | translate }} <mat-icon inline>arrow_forward_ios</mat-icon>
               </span>
             </div>
           </a>

@@ -38,7 +38,7 @@ interface CategoryOption {
   ],
   template: `
     <a routerLink="/admin/artikel" class="back">
-      <mat-icon inline>arrow_back</mat-icon> {{ 'admin.articles.title' | translate }}
+      <mat-icon inline>arrow_back_ios</mat-icon> {{ 'admin.articles.title' | translate }}
     </a>
 
     <mat-card class="panel">
