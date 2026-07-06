@@ -62,6 +62,33 @@ export interface PsychologistPatientDetail {
   profile: PatientProfile | null;
 }
 
+/** Session log entry; visible only to the patient's assigned psychologists. */
+export interface LogbookEntry {
+  id: string;
+  sessionDate: string; // 'YYYY-MM-DD'
+  sessionNumber: number;
+  caseSummary: string;
+  sessionActivities: string;
+  homework: string | null;
+  nextSessionPlan: string | null;
+  followUpNeeded: boolean;
+  authorPsychologistId: string;
+  authorDisplayName: string;
+  isOwn: boolean;
+  createdAtUtc: string;
+  updatedAtUtc: string | null;
+}
+
+export interface SaveLogbookEntryRequest {
+  sessionDate: string;
+  sessionNumber: number;
+  caseSummary: string;
+  sessionActivities: string;
+  homework: string | null;
+  nextSessionPlan: string | null;
+  followUpNeeded: boolean;
+}
+
 export interface AdminPatientListItem {
   userId: string;
   fullName: string;
