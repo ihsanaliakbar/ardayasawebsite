@@ -32,7 +32,9 @@ public class SchedulingTests(TestWebApplicationFactory factory) : IClassFixture<
 
     private record MapRowBody(Guid ServiceId, string Name, bool Enabled);
 
-    private record SlotBody(DateTime StartUtc, DateTime EndUtc);
+    private record SlotBody(DateTime StartUtc, DateTime EndUtc, Guid[] PsychologistIds);
+
+    private record ServicePsychologistBody(Guid PsychologistId, string DisplayName, string? Slug);
 
     private record DaySlotsBody(string Date, SlotBody[] Slots);
 
@@ -129,7 +131,7 @@ public class SchedulingTests(TestWebApplicationFactory factory) : IClassFixture<
         var adminToken = await LoginAdminAsync(client);
 
         var (psychId, psychToken) = await InvitePsychologistAsync(client, adminToken, "sched.psy.b@test.local", "Psikolog Jadwal B");
-        var slug = await SetProfileAndGetSlugAsync(client, adminToken, psychId, "Psikolog Jadwal B");
+        await SetProfileAndGetSlugAsync(client, adminToken, psychId, "Psikolog Jadwal B");
         var serviceId = await CreateBookableServiceAsync(client, adminToken, "Konseling Tes Online");
 
         // Enable the service for this psychologist (admin mapping) and open every weekday.
@@ -146,18 +148,24 @@ public class SchedulingTests(TestWebApplicationFactory factory) : IClassFixture<
         Assert.Equal(HttpStatusCode.OK, map.StatusCode);
         Assert.Contains((await map.Content.ReadFromJsonAsync<MapRowBody[]>())!, r => r.ServiceId == serviceId && r.Enabled);
 
-        // Public wizard data needs no login: bookable services + slots.
-        var services = await client.GetAsync($"/api/psychologists/{slug}/services");
-        Assert.Equal(HttpStatusCode.OK, services.StatusCode);
-        Assert.Contains((await services.Content.ReadFromJsonAsync<ServiceBody[]>())!, s => s.Id == serviceId);
+        // Public wizard data needs no login: catalog → psychologists for the service → slots.
+        var catalog = await client.GetAsync("/api/booking/services");
+        Assert.Equal(HttpStatusCode.OK, catalog.StatusCode);
+        Assert.Contains((await catalog.Content.ReadFromJsonAsync<ServiceBody[]>())!, s => s.Id == serviceId);
 
-        var slotsResponse = await client.GetAsync($"/api/psychologists/{slug}/slots?serviceId={serviceId}");
+        var offering = await client.GetAsync($"/api/booking/services/{serviceId}/psychologists");
+        Assert.Equal(HttpStatusCode.OK, offering.StatusCode);
+        Assert.Contains((await offering.Content.ReadFromJsonAsync<ServicePsychologistBody[]>())!,
+            p => p.PsychologistId == psychId);
+
+        var slotsResponse = await client.GetAsync($"/api/booking/slots?serviceId={serviceId}&psychologistId={psychId}");
         Assert.Equal(HttpStatusCode.OK, slotsResponse.StatusCode);
         var days = await slotsResponse.Content.ReadFromJsonAsync<DaySlotsBody[]>();
         Assert.NotEmpty(days!);
         // 09:00–12:00 with 60-minute sessions and 0 buffer = 3 slots per full day.
         var fullDay = days!.First(d => d.Slots.Length == 3);
         var slot = fullDay.Slots[0];
+        Assert.Equal([psychId], slot.PsychologistIds);
 
         // A patient with an incomplete intake is gated out of booking.
         var patientToken = await RegisterPatientAsync(client, "sched.patient1@test.local");
@@ -177,10 +185,18 @@ public class SchedulingTests(TestWebApplicationFactory factory) : IClassFixture<
         Assert.NotNull(booking.PaymentDueAtUtc);
         Assert.Null(booking.ZoomLink);
 
-        // The held slot disappears from public slot generation...
-        var slotsAfter = await client.GetAsync($"/api/psychologists/{slug}/slots?serviceId={serviceId}");
+        // The held slot disappears from public slot generation — both in the
+        // per-psychologist view and in the "tanpa preferensi" aggregate (this
+        // psychologist is the only one offering the service).
+        var slotsAfter = await client.GetAsync($"/api/booking/slots?serviceId={serviceId}&psychologistId={psychId}");
         var daysAfter = await slotsAfter.Content.ReadFromJsonAsync<DaySlotsBody[]>();
         Assert.DoesNotContain(daysAfter!.SelectMany(d => d.Slots), s => s.StartUtc == slot.StartUtc);
+
+        var aggregate = await client.GetAsync($"/api/booking/slots?serviceId={serviceId}");
+        Assert.Equal(HttpStatusCode.OK, aggregate.StatusCode);
+        var aggregateDays = await aggregate.Content.ReadFromJsonAsync<DaySlotsBody[]>();
+        Assert.DoesNotContain(aggregateDays!.SelectMany(d => d.Slots), s => s.StartUtc == slot.StartUtc);
+        Assert.All(aggregateDays!.SelectMany(d => d.Slots), s => Assert.Equal([psychId], s.PsychologistIds));
 
         // ...and a second patient trying the same slot is rejected.
         var patient2Token = await RegisterPatientAsync(client, "sched.patient2@test.local");
@@ -242,7 +258,7 @@ public class SchedulingTests(TestWebApplicationFactory factory) : IClassFixture<
         var adminToken = await LoginAdminAsync(client);
 
         var (psychId, psychToken) = await InvitePsychologistAsync(client, adminToken, "sched.psy.d@test.local", "Psikolog Jadwal D");
-        var slug = await SetProfileAndGetSlugAsync(client, adminToken, psychId, "Psikolog Jadwal D");
+        await SetProfileAndGetSlugAsync(client, adminToken, psychId, "Psikolog Jadwal D");
         var serviceId = await CreateBookableServiceAsync(client, adminToken, "Konseling Tes Buffer");
         await SendAsync(client, HttpMethod.Put, $"/api/admin/psychologists/{psychId}/services", adminToken,
             new { serviceIds = new[] { serviceId } });
@@ -252,7 +268,7 @@ public class SchedulingTests(TestWebApplicationFactory factory) : IClassFixture<
         await SendAsync(client, HttpMethod.Put, $"/api/admin/psychologists/{psychId}/availability", adminToken, new { rules = allDays });
 
         // Default buffer 0: 3 slots in a 3-hour window.
-        var days = await (await client.GetAsync($"/api/psychologists/{slug}/slots?serviceId={serviceId}"))
+        var days = await (await client.GetAsync($"/api/booking/slots?serviceId={serviceId}&psychologistId={psychId}"))
             .Content.ReadFromJsonAsync<DaySlotsBody[]>();
         Assert.Equal(3, days!.First(d => d.Slots.Length >= 2).Slots.Length);
 
@@ -265,7 +281,7 @@ public class SchedulingTests(TestWebApplicationFactory factory) : IClassFixture<
             (await SendAsync(client, HttpMethod.Put, "/api/admin/settings", adminToken, new { slotBufferMinutes = 30 })).StatusCode);
 
         // Buffer 30 min: 09:00 and 10:30 fit; 12:00 would end 13:00 > 12:00 → 2 slots.
-        var daysBuffered = await (await client.GetAsync($"/api/psychologists/{slug}/slots?serviceId={serviceId}"))
+        var daysBuffered = await (await client.GetAsync($"/api/booking/slots?serviceId={serviceId}&psychologistId={psychId}"))
             .Content.ReadFromJsonAsync<DaySlotsBody[]>();
         Assert.Equal(2, daysBuffered!.First(d => d.Slots.Length >= 2).Slots.Length);
 

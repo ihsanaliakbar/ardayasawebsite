@@ -17,39 +17,64 @@ public class BookingService(AppDbContext db, IClinicSettingsService settings, IA
     private const int MaxRangeDays = 31;
     private const int DefaultRangeDays = 14;
 
-    public async Task<IReadOnlyList<BookableServiceDto>?> GetBookableServicesAsync(
-        string psychologistSlug, CancellationToken ct = default)
-    {
-        var psychologistId = await ActivePsychologistIdBySlugAsync(psychologistSlug, ct);
-        if (psychologistId is null)
-        {
-            return null;
-        }
-
-        return await MappedBookableServices(psychologistId.Value)
+    public async Task<IReadOnlyList<BookableServiceDto>> GetBookableCatalogAsync(CancellationToken ct = default)
+        => await PsychologistServiceMappingService.BookableServices(db)
+            .Where(s => db.PsychologistServices.Any(m =>
+                m.ServiceId == s.Id && m.Psychologist!.IsActive && m.Psychologist!.Slug != null))
             .OrderBy(s => s.Category!.SortOrder)
             .ThenBy(s => s.SortOrder)
             .Select(s => new BookableServiceDto(
                 s.Id, s.Name, s.Category!.Name, s.DurationMinutes!.Value, s.OfflinePrice, s.OnlinePrice, s.Notes))
             .ToListAsync(ct);
+
+    public async Task<IReadOnlyList<ServicePsychologistDto>?> GetPsychologistsForServiceAsync(
+        Guid serviceId, CancellationToken ct = default)
+    {
+        var bookable = await PsychologistServiceMappingService.BookableServices(db)
+            .AnyAsync(s => s.Id == serviceId, ct);
+        if (!bookable)
+        {
+            return null;
+        }
+
+        var rows = await OfferingPsychologists(serviceId)
+            .OrderBy(p => p.DisplayOrder)
+            .ThenBy(p => p.DisplayName)
+            .Select(p => new { p.Id, p.DisplayName, p.Title, p.Specialization, p.Slug, p.PhotoKey })
+            .ToListAsync(ct);
+        return rows
+            .Select(p => new ServicePsychologistDto(
+                p.Id, p.DisplayName, p.Title, p.Specialization, p.Slug, Content.FileUrl.From(p.PhotoKey)))
+            .ToList();
     }
 
     public async Task<Result<IReadOnlyList<DaySlotsDto>>> GetSlotsAsync(
-        string psychologistSlug, Guid serviceId, DateOnly? fromDate, DateOnly? toDate, CancellationToken ct = default)
+        Guid serviceId, Guid? psychologistId, DateOnly? fromDate, DateOnly? toDate, CancellationToken ct = default)
     {
-        var psychologistId = await ActivePsychologistIdBySlugAsync(psychologistSlug, ct);
-        if (psychologistId is null)
-        {
-            return Result<IReadOnlyList<DaySlotsDto>>.Failure(BookingErrors.PsychologistNotFound);
-        }
-
-        var service = await MappedBookableServices(psychologistId.Value)
+        var service = await PsychologistServiceMappingService.BookableServices(db)
             .Where(s => s.Id == serviceId)
             .Select(s => new { Duration = s.DurationMinutes!.Value })
             .FirstOrDefaultAsync(ct);
         if (service is null)
         {
-            return Result<IReadOnlyList<DaySlotsDto>>.Failure(BookingErrors.ServiceNotOffered);
+            return Result<IReadOnlyList<DaySlotsDto>>.Failure(BookingErrors.ServiceNotBookable);
+        }
+
+        List<Guid> candidates;
+        if (psychologistId is not null)
+        {
+            var offered = await OfferingPsychologists(serviceId).AnyAsync(p => p.Id == psychologistId, ct);
+            if (!offered)
+            {
+                return Result<IReadOnlyList<DaySlotsDto>>.Failure(BookingErrors.ServiceNotOffered);
+            }
+
+            candidates = [psychologistId.Value];
+        }
+        else
+        {
+            // "Tanpa preferensi": aggregate across everyone offering the service.
+            candidates = await OfferingPsychologists(serviceId).Select(p => p.Id).ToListAsync(ct);
         }
 
         var nowUtc = DateTime.UtcNow;
@@ -66,11 +91,27 @@ public class BookingService(AppDbContext db, IClinicSettingsService settings, IA
             return Result<IReadOnlyList<DaySlotsDto>>.Failure(BookingErrors.InvalidDateRange);
         }
 
-        var slots = await GenerateSlotsAsync(psychologistId.Value, service.Duration, from, to, nowUtc, ct);
-        var byDay = slots
+        var buffer = await settings.GetSlotBufferMinutesAsync(ct);
+        var merged = new Dictionary<(DateTime Start, DateTime End), List<Guid>>();
+        foreach (var candidate in candidates)
+        {
+            foreach (var slot in await GenerateSlotsAsync(candidate, service.Duration, from, to, nowUtc, buffer, ct))
+            {
+                if (!merged.TryGetValue((slot.StartUtc, slot.EndUtc), out var ids))
+                {
+                    merged[(slot.StartUtc, slot.EndUtc)] = ids = [];
+                }
+
+                ids.Add(candidate);
+            }
+        }
+
+        var byDay = merged
+            .Select(kv => new SlotDto(kv.Key.Start, kv.Key.End, kv.Value))
+            .OrderBy(s => s.StartUtc)
             .GroupBy(s => Wib.ToWibDate(s.StartUtc))
             .OrderBy(g => g.Key)
-            .Select(g => new DaySlotsDto(g.Key, g.Select(s => new SlotDto(s.StartUtc, s.EndUtc)).ToList()))
+            .Select(g => new DaySlotsDto(g.Key, g.ToList()))
             .ToList();
         return Result<IReadOnlyList<DaySlotsDto>>.Success(byDay);
     }
@@ -123,7 +164,8 @@ public class BookingService(AppDbContext db, IClinicSettingsService settings, IA
         // The requested start must be one of the currently generatable slots — this
         // enforces alignment, availability, and (app-level) overlap in one check.
         var slotDate = Wib.ToWibDate(startUtc);
-        var candidateSlots = await GenerateSlotsAsync(psychologist.Id, service.Duration, slotDate, slotDate, nowUtc, ct);
+        var buffer = await settings.GetSlotBufferMinutesAsync(ct);
+        var candidateSlots = await GenerateSlotsAsync(psychologist.Id, service.Duration, slotDate, slotDate, nowUtc, buffer, ct);
         if (!candidateSlots.Any(s => s.StartUtc == startUtc))
         {
             return Result<PatientBookingDto>.Failure(BookingErrors.SlotUnavailable);
@@ -257,7 +299,7 @@ public class BookingService(AppDbContext db, IClinicSettingsService settings, IA
     }
 
     private async Task<List<Slot>> GenerateSlotsAsync(
-        Guid psychologistId, int durationMinutes, DateOnly from, DateOnly to, DateTime nowUtc, CancellationToken ct)
+        Guid psychologistId, int durationMinutes, DateOnly from, DateOnly to, DateTime nowUtc, int bufferMinutes, CancellationToken ct)
     {
         var rules = await db.AvailabilityRules.AsNoTracking()
             .Where(r => r.PsychologistId == psychologistId)
@@ -279,19 +321,15 @@ public class BookingService(AppDbContext db, IClinicSettingsService settings, IA
             .Select(b => new Slot(b.StartUtc, b.EndUtc))
             .ToListAsync(ct);
 
-        var buffer = await settings.GetSlotBufferMinutesAsync(ct);
-        return SlotGenerator.Generate(from, to, durationMinutes, buffer, rules, exceptions, bookings, nowUtc);
+        return SlotGenerator.Generate(from, to, durationMinutes, bufferMinutes, rules, exceptions, bookings, nowUtc);
     }
 
-    private IQueryable<Service> MappedBookableServices(Guid psychologistId)
-        => PsychologistServiceMappingService.BookableServices(db)
-            .Where(s => db.PsychologistServices.Any(m => m.PsychologistId == psychologistId && m.ServiceId == s.Id));
-
-    private async Task<Guid?> ActivePsychologistIdBySlugAsync(string slug, CancellationToken ct)
-        => await db.Psychologists.AsNoTracking()
-            .Where(p => p.Slug == slug && p.IsActive)
-            .Select(p => (Guid?)p.Id)
-            .FirstOrDefaultAsync(ct);
+    /// <summary>Publicly bookable psychologists for a service: active, publicly listed (has a slug), and mapped to it.</summary>
+    private IQueryable<Psychologist> OfferingPsychologists(Guid serviceId)
+        => db.Psychologists.AsNoTracking()
+            .Where(p => p.IsActive
+                        && p.Slug != null
+                        && db.PsychologistServices.Any(m => m.PsychologistId == p.Id && m.ServiceId == serviceId));
 
     private static DateTime NormalizeUtc(DateTime value) => value.Kind switch
     {

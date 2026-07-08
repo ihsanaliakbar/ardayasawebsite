@@ -13,9 +13,23 @@ public record BookableServiceDto(
     decimal? OnlinePrice,
     string? Notes);
 
+/// <summary>A psychologist offering a given service, for the wizard's "pilih psikolog" step.</summary>
+public record ServicePsychologistDto(
+    Guid PsychologistId,
+    string DisplayName,
+    string? Title,
+    string? Specialization,
+    string? Slug,
+    string? PhotoUrl);
+
 public record DaySlotsDto(DateOnly Date, IReadOnlyList<SlotDto> Slots);
 
-public record SlotDto(DateTime StartUtc, DateTime EndUtc);
+/// <summary>
+/// One bookable time with every psychologist free at it. Single-element list when
+/// the query was filtered to one psychologist; multi-element for "tanpa preferensi",
+/// where the client picks one of the ids at booking time.
+/// </summary>
+public record SlotDto(DateTime StartUtc, DateTime EndUtc, IReadOnlyList<Guid> PsychologistIds);
 
 public record CreateBookingRequest(
     Guid PsychologistId,
@@ -61,12 +75,19 @@ public record SetZoomLinkRequest(string ZoomLink);
 
 public interface IBookingService
 {
-    /// <summary>Bookable services for the public booking wizard; null when the slug doesn't resolve to an active psychologist.</summary>
-    Task<IReadOnlyList<BookableServiceDto>?> GetBookableServicesAsync(string psychologistSlug, CancellationToken ct = default);
+    /// <summary>The service-first wizard catalog: bookable services offered by at least one publicly listed psychologist.</summary>
+    Task<IReadOnlyList<BookableServiceDto>> GetBookableCatalogAsync(CancellationToken ct = default);
 
-    /// <summary>Available slots (UTC) for a psychologist + service over a WIB date range.</summary>
+    /// <summary>Publicly listed psychologists offering the service; null when the service isn't bookable.</summary>
+    Task<IReadOnlyList<ServicePsychologistDto>?> GetPsychologistsForServiceAsync(Guid serviceId, CancellationToken ct = default);
+
+    /// <summary>
+    /// Available slots (UTC) over a WIB date range — for one psychologist when
+    /// <paramref name="psychologistId"/> is given, otherwise aggregated across every
+    /// psychologist offering the service ("tanpa preferensi").
+    /// </summary>
     Task<Result<IReadOnlyList<DaySlotsDto>>> GetSlotsAsync(
-        string psychologistSlug, Guid serviceId, DateOnly? fromDate, DateOnly? toDate, CancellationToken ct = default);
+        Guid serviceId, Guid? psychologistId, DateOnly? fromDate, DateOnly? toDate, CancellationToken ct = default);
 
     Task<Result<PatientBookingDto>> CreateAsync(Guid patientUserId, CreateBookingRequest request, CancellationToken ct = default);
 
