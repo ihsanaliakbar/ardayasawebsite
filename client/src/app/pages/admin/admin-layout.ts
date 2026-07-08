@@ -44,5 +44,7 @@ export class AdminLayout {
     { path: '/admin/faq', icon: 'quiz', label: 'admin.tabs.faq', exact: true },
     { path: '/admin/testimoni', icon: 'reviews', label: 'admin.tabs.testimonials', exact: true },
     { path: '/admin/layanan', icon: 'sell', label: 'admin.tabs.services', exact: true },
+    { path: '/admin/booking', icon: 'event', label: 'admin.tabs.bookings', exact: true },
+    { path: '/admin/pengaturan', icon: 'settings', label: 'admin.tabs.settings', exact: true },
   ];
 }

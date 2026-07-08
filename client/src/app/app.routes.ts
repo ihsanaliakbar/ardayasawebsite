@@ -32,6 +32,21 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/account/patient-profile-page').then((m) => m.PatientProfilePage),
       },
       {
+        path: 'akun/booking',
+        canActivate: [roleGuard(ROLE_PATIENT)],
+        loadComponent: () => import('./pages/account/patient-bookings').then((m) => m.PatientBookings),
+      },
+      {
+        path: 'akun/booking/:id',
+        canActivate: [roleGuard(ROLE_PATIENT)],
+        loadComponent: () => import('./pages/account/patient-booking-detail').then((m) => m.PatientBookingDetail),
+      },
+      {
+        path: 'janji-temu/:slug',
+        canActivate: [roleGuard(ROLE_PATIENT)],
+        loadComponent: () => import('./pages/booking/booking-wizard').then((m) => m.BookingWizard),
+      },
+      {
         path: 'psikolog',
         canActivate: [roleGuard(ROLE_PSYCHOLOGIST, ROLE_ADMIN)],
         loadComponent: () => import('./pages/psychologist/psych-home').then((m) => m.PsychHome),
@@ -48,6 +63,9 @@ export const routes: Routes = [
         children: [
           { path: '', loadComponent: () => import('./pages/admin/admin-home').then((m) => m.AdminHome) },
           { path: 'psikolog/:id', loadComponent: () => import('./pages/admin/psychologist-profile-edit').then((m) => m.PsychologistProfileEdit) },
+          { path: 'psikolog/:id/jadwal', loadComponent: () => import('./pages/admin/psychologist-schedule-edit').then((m) => m.PsychologistScheduleEdit) },
+          { path: 'booking', loadComponent: () => import('./pages/admin/bookings-admin').then((m) => m.BookingsAdmin) },
+          { path: 'pengaturan', loadComponent: () => import('./pages/admin/settings-admin').then((m) => m.SettingsAdmin) },
           { path: 'artikel', loadComponent: () => import('./pages/admin/articles-admin').then((m) => m.ArticlesAdmin) },
           { path: 'artikel/baru', loadComponent: () => import('./pages/admin/article-edit').then((m) => m.ArticleEdit) },
           { path: 'artikel/:id', loadComponent: () => import('./pages/admin/article-edit').then((m) => m.ArticleEdit) },

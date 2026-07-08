@@ -7,6 +7,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 import { CLINIC } from '../../core/clinic';
 import { ContentService } from '../../core/content/content.service';
+import { formatWibTimeOnly } from '../../core/scheduling/wib';
 import { SeoService } from '../../core/seo';
 
 @Component({
@@ -24,7 +25,23 @@ import { SeoService } from '../../core/seo';
             @if (p.photoUrl) {
               <img [src]="p.photoUrl" [alt]="p.displayName" class="photo" />
             }
-            @if (p.scheduleLines.length > 0) {
+            @if (p.schedule.length > 0) {
+              <!-- Live availability-derived schedule (Phase 2) -->
+              <h3>{{ 'psychologists.schedule' | translate }}</h3>
+              <ul class="schedule">
+                @for (day of p.schedule; track day.dayOfWeek) {
+                  <li>
+                    <mat-icon inline>schedule</mat-icon>
+                    {{ 'enums.day.' + day.dayOfWeek | translate }}
+                    @for (range of day.ranges; track range.startTime; let last = $last) {
+                      {{ formatTime(range.startTime) }}–{{ formatTime(range.endTime) }}@if (!last) {, }
+                    }
+                    WIB
+                  </li>
+                }
+              </ul>
+              <p class="schedule-note">{{ 'psychologists.scheduleNote' | translate }}</p>
+            } @else if (p.scheduleLines.length > 0) {
               <h3>{{ 'psychologists.schedule' | translate }}</h3>
               <ul class="schedule">
                 @for (line of p.scheduleLines; track line) {
@@ -129,6 +146,8 @@ export class PsychologistDetailPage {
   private readonly translate = inject(TranslateService);
 
   protected readonly clinic = CLINIC;
+
+  protected readonly formatTime = formatWibTimeOnly;
 
   protected readonly psychologist = toSignal(
     this.route.paramMap.pipe(

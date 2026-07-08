@@ -39,9 +39,14 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
           <dd>{{ user.whatsAppNumber ?? '—' }}</dd>
         </dl>
         @if (isPatient) {
-          <a mat-stroked-button routerLink="/akun/data-pribadi">
-            {{ 'account.editIntake' | translate }}
-          </a>
+          <div class="actions">
+            <a mat-stroked-button routerLink="/akun/data-pribadi">
+              {{ 'account.editIntake' | translate }}
+            </a>
+            <a mat-stroked-button routerLink="/akun/booking">
+              {{ 'account.myBookings' | translate }}
+            </a>
+          </div>
         }
       </mat-card>
     }
@@ -65,9 +70,14 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
               @if (p.specialization) { <br /><span class="muted">{{ p.specialization }}</span> }
             </div>
             @if (p.slug) {
-              <a mat-stroked-button [routerLink]="['/psikolog-kami', p.slug]">
-                {{ 'account.myPsychologists.viewProfile' | translate }}
-              </a>
+              <span class="row-actions">
+                <a mat-stroked-button [routerLink]="['/psikolog-kami', p.slug]">
+                  {{ 'account.myPsychologists.viewProfile' | translate }}
+                </a>
+                <a mat-flat-button [routerLink]="['/janji-temu', p.slug]">
+                  {{ 'account.myPsychologists.book' | translate }}
+                </a>
+              </span>
             }
           </div>
         }
@@ -103,7 +113,8 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
     }
     .psych-row:last-child { border-bottom: none; }
     .psych-row img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
-    .psych-row a { margin-left: auto; }
+    .psych-row .row-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .avatar-fallback { width: 48px; height: 48px; font-size: 48px; color: var(--mat-sys-outline); }
   `,
 })

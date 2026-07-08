@@ -87,6 +87,9 @@ interface PsychologistRow {
             <a mat-stroked-button [routerLink]="['/admin/psikolog', p.id]">
               {{ 'admin.psychologists.editProfile' | translate }}
             </a>
+            <a mat-stroked-button [routerLink]="['/admin/psikolog', p.id, 'jadwal']">
+              {{ 'admin.psychologists.editSchedule' | translate }}
+            </a>
           </div>
         </div>
       }

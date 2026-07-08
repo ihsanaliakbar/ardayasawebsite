@@ -18,10 +18,18 @@ export interface Testimonial {
   rating: number;
 }
 
+/** Availability-derived practice schedule; times are wall-clock WIB 'HH:mm:ss'. */
+export interface ScheduleDay {
+  dayOfWeek: string; // API DayOfWeek enum name, e.g. 'Monday'
+  ranges: { startTime: string; endTime: string }[];
+}
+
 export interface PsychologistDetail extends PsychologistSummary {
   education: string[];
   bio: string | null;
+  /** Static Phase 1 text — fallback while schedule (live availability) is empty. */
   scheduleLines: string[];
+  schedule: ScheduleDay[];
   testimonials: Testimonial[];
 }
 

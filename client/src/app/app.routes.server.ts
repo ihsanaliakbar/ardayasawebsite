@@ -8,6 +8,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'psikolog/**', renderMode: RenderMode.Client },
   { path: 'admin', renderMode: RenderMode.Client },
   { path: 'admin/**', renderMode: RenderMode.Client },
+  { path: 'janji-temu/**', renderMode: RenderMode.Client },
   // Public routes are server-rendered for SEO.
   { path: '**', renderMode: RenderMode.Server },
 ];

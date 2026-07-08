@@ -145,7 +145,19 @@
     "title": "Dasbor Psikolog",
     "profileTitle": "Profil Publik Saya",
     "profileHint": "Profil ini tampil di halaman Psikolog Kami pada situs publik. Perubahan data profil dilakukan oleh admin — hubungi admin jika ada data yang perlu diperbarui.",
-    "comingSoon": "Fitur ketersediaan jadwal dan kelola sesi akan hadir di fase berikutnya.",
+    "schedule": {
+      "title": "Jadwal Praktik Saya",
+      "hint": "Jadwal praktik dikelola oleh admin — hubungi admin jika ada jadwal yang perlu diubah.",
+      "empty": "Jadwal praktik Anda belum diatur oleh admin.",
+      "exceptions": "Pengecualian Tanggal"
+    },
+    "bookings": {
+      "title": "Sesi Saya",
+      "hint": "Booking sesi Anda. Untuk sesi online, tambahkan tautan meeting — pasien melihatnya setelah booking terkonfirmasi.",
+      "empty": "Belum ada booking sesi.",
+      "zoomPlaceholder": "https://zoom.us/j/…",
+      "saveZoom": "Simpan Tautan"
+    },
     "patients": {
       "title": "Pasien Saya",
       "hint": "Pasien yang ditugaskan kepada Anda oleh admin. Data pribadi pasien bersifat rahasia.",
@@ -232,6 +244,7 @@
     "whatsapp": "Nomor WhatsApp",
     "roles": "Peran",
     "editIntake": "Lengkapi / Ubah Data Pribadi",
+    "myBookings": "Booking Saya",
     "intakeBanner": {
       "title": "Lengkapi Data Pribadi Anda",
       "text": "Data ini membantu psikolog memahami kebutuhan Anda dan hanya dapat dilihat oleh psikolog yang menangani Anda.",
@@ -240,7 +253,8 @@
     "myPsychologists": {
       "title": "Psikolog Saya",
       "empty": "Belum ada psikolog yang ditugaskan untuk Anda.",
-      "viewProfile": "Lihat Profil"
+      "viewProfile": "Lihat Profil",
+      "book": "Buat Janji"
     }
   },
   "patientProfile": {
@@ -282,6 +296,28 @@
       "Bachelor": "S1/D4",
       "Master": "S2",
       "Doctorate": "S3"
+    },
+    "day": {
+      "Monday": "Senin",
+      "Tuesday": "Selasa",
+      "Wednesday": "Rabu",
+      "Thursday": "Kamis",
+      "Friday": "Jumat",
+      "Saturday": "Sabtu",
+      "Sunday": "Ahad"
+    },
+    "bookingMode": {
+      "Offline": "Tatap Muka (Offline)",
+      "Online": "Online"
+    },
+    "bookingStatus": {
+      "PendingPayment": "Menunggu Pembayaran",
+      "AwaitingVerification": "Menunggu Verifikasi",
+      "Confirmed": "Terkonfirmasi",
+      "Completed": "Selesai",
+      "NoShow": "Tidak Hadir",
+      "Cancelled": "Dibatalkan",
+      "Expired": "Kedaluwarsa"
     }
   },
   "admin": {
@@ -300,7 +336,9 @@
       "articles": "Artikel",
       "faq": "FAQ",
       "testimonials": "Testimoni",
-      "services": "Layanan"
+      "services": "Layanan",
+      "bookings": "Booking",
+      "settings": "Pengaturan"
     },
     "psychologists": {
       "title": "Psikolog",
@@ -316,7 +354,8 @@
       "statusPending": "Menunggu Undangan",
       "empty": "Belum ada psikolog.",
       "editProfile": "Profil",
-      "editProfileTitle": "Profil: {{name}}"
+      "editProfileTitle": "Profil: {{name}}",
+      "editSchedule": "Jadwal & Layanan"
     },
     "articles": {
       "title": "Artikel",
@@ -378,6 +417,77 @@
       "active": "Aktif"
     }
   },
+  "adminSchedule": {
+    "title": "Jadwal & Layanan: {{name}}",
+    "hint": "Jadwal mingguan dalam waktu WIB. Psikolog melihat jadwal ini sebagai tampilan baca-saja.",
+    "closed": "Libur",
+    "addRange": "Tambah jam",
+    "removeRange": "Hapus jam",
+    "saveRules": "Simpan Jadwal Mingguan",
+    "exceptions": {
+      "title": "Pengecualian Tanggal",
+      "hint": "Blokir tanggal tertentu (cuti, libur) atau tambahkan jam praktik satu kali di luar jadwal mingguan.",
+      "empty": "Belum ada pengecualian tanggal.",
+      "block": "Blokir",
+      "extra": "Jam tambahan",
+      "allDay": "Sepanjang hari",
+      "add": "Tambah",
+      "start": "Jam mulai",
+      "timesHint": "Kosongkan jam untuk memblokir sepanjang hari. Jam tambahan wajib memiliki jam mulai dan selesai."
+    },
+    "services": {
+      "title": "Layanan yang Dapat Dibooking",
+      "hint": "Centang layanan yang dapat dibooking pada psikolog ini. Paket bundling dan layanan tanpa durasi tetap dilayani via WhatsApp.",
+      "save": "Simpan Layanan"
+    }
+  },
+  "adminBookings": {
+    "title": "Booking",
+    "hint": "Semua booking sesi. Verifikasi pembayaran hadir di fase berikutnya.",
+    "statusFilter": "Status",
+    "allStatuses": "Semua status",
+    "empty": "Belum ada booking.",
+    "zoomPlaceholder": "https://zoom.us/j/…",
+    "saveZoom": "Simpan Tautan"
+  },
+  "adminSettings": {
+    "title": "Pengaturan Klinik",
+    "slotBuffer": "Jeda antar sesi",
+    "slotBufferHint": "Jeda kosong yang disisipkan di antara slot sesi saat jadwal dibuat. 0 = sesi berurutan tanpa jeda.",
+    "minutes": "menit"
+  },
+  "booking": {
+    "title": "Buat Janji dengan {{name}}",
+    "stepService": "Pilih Layanan",
+    "noServices": "Belum ada layanan yang dapat dibooking untuk psikolog ini. Silakan hubungi admin via WhatsApp.",
+    "stepMode": "Pilih Mode Sesi",
+    "stepSlot": "Pilih Jadwal",
+    "slotHint": "Waktu ditampilkan dalam WIB (Waktu Indonesia Barat).",
+    "noSlots": "Tidak ada jadwal tersedia pada rentang ini. Coba tampilkan lebih banyak hari.",
+    "moreDays": "Tampilkan lebih banyak hari",
+    "stepConfirm": "Konfirmasi",
+    "summaryService": "Layanan",
+    "summaryTime": "Waktu",
+    "summaryPrice": "Biaya",
+    "paymentNote": "Setelah booking dibuat, slot ditahan selama 30 menit. Instruksi pembayaran transfer bank akan ditampilkan dan admin akan memverifikasi pembayaran Anda.",
+    "intakeRequired": "Sebelum membuat booking pertama, Anda perlu melengkapi Data Pribadi.",
+    "completeIntake": "Lengkapi Data Pribadi",
+    "submit": "Buat Booking"
+  },
+  "myBookings": {
+    "title": "Booking Saya",
+    "detail": "Detail",
+    "detailTitle": "Detail Booking",
+    "empty": "Anda belum memiliki booking.",
+    "browsePsychologists": "Lihat Psikolog Kami",
+    "psychologist": "Psikolog",
+    "pendingTitle": "Menunggu Pembayaran",
+    "pendingText": "Selesaikan pembayaran via transfer bank, lalu konfirmasi ke admin.",
+    "pendingUntil": "Slot ditahan hingga pukul {{time}} WIB.",
+    "contactAdmin": "Hubungi admin via WhatsApp",
+    "zoomTitle": "Tautan Sesi Online",
+    "zoomPending": "Tautan sesi online akan muncul di sini setelah booking terkonfirmasi."
+  },
   "apiErrors": {
     "generic": "Terjadi kesalahan. Silakan coba lagi.",
     "auth_invalid_credentials": "Email atau kata sandi salah.",
@@ -411,6 +521,25 @@
     "logbook_session_number_invalid": "Nomor sesi harus 1 atau lebih.",
     "logbook_summary_required": "Ringkasan kasus wajib diisi.",
     "logbook_activities_required": "Aktivitas sesi wajib diisi.",
+    "scheduling_psychologist_not_found": "Psikolog tidak ditemukan.",
+    "scheduling_invalid_time_range": "Jam mulai harus sebelum jam selesai.",
+    "scheduling_overlapping_rules": "Jam ketersediaan pada hari yang sama tidak boleh saling tumpang tindih.",
+    "scheduling_exception_times_required": "Jam tambahan memerlukan jam mulai dan jam selesai.",
+    "scheduling_exception_date_in_past": "Pengecualian hanya dapat dibuat untuk hari ini atau setelahnya.",
+    "scheduling_exception_not_found": "Pengecualian tidak ditemukan.",
+    "scheduling_unknown_service_ids": "Ada layanan yang tidak dikenal atau tidak dapat dibooking.",
+    "settings_invalid_buffer": "Jeda antar sesi harus antara 0 sampai 120 menit.",
+    "booking_psychologist_not_found": "Psikolog tidak ditemukan atau tidak aktif.",
+    "booking_service_not_bookable": "Layanan ini tidak dapat dibooking secara online. Silakan hubungi admin via WhatsApp.",
+    "booking_service_not_offered": "Psikolog ini tidak melayani layanan tersebut.",
+    "booking_mode_unavailable": "Layanan ini tidak tersedia dalam mode yang dipilih.",
+    "booking_intake_incomplete": "Lengkapi Data Pribadi Anda terlebih dahulu sebelum membuat booking.",
+    "booking_slot_unavailable": "Jadwal yang dipilih sudah tidak tersedia. Silakan pilih jadwal lain.",
+    "booking_slot_taken": "Jadwal ini baru saja diambil orang lain. Silakan pilih jadwal lain.",
+    "booking_invalid_date_range": "Rentang tanggal tidak valid.",
+    "booking_not_found": "Booking tidak ditemukan.",
+    "booking_zoom_link_invalid": "Tautan meeting harus berupa alamat https yang valid.",
+    "booking_zoom_link_offline": "Tautan meeting hanya untuk sesi online.",
     "identity_PasswordTooShort": "Kata sandi minimal 8 karakter.",
     "identity_PasswordRequiresLower": "Kata sandi harus memuat huruf kecil.",
     "identity_PasswordRequiresUpper": "Kata sandi harus memuat huruf besar.",
