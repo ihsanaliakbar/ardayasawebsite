@@ -42,7 +42,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/account/patient-booking-detail').then((m) => m.PatientBookingDetail),
       },
       {
-        path: 'janji-temu/:slug',
+        path: 'janji-temu',
         canActivate: [roleGuard(ROLE_PATIENT)],
         loadComponent: () => import('./pages/booking/booking-wizard').then((m) => m.BookingWizard),
       },

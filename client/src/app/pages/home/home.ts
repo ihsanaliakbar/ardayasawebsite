@@ -149,10 +149,12 @@ import { SeoService } from '../../core/seo';
           <p>{{ 'home.ctaText' | translate }}</p>
         </div>
         <div class="cta-actions">
-          <a mat-flat-button class="gold-btn" [href]="clinic.whatsAppUrl" target="_blank" rel="noopener">
+          <a mat-flat-button class="gold-btn" routerLink="/janji-temu">
             {{ 'home.ctaButton' | translate }}
           </a>
-          <span class="cta-alt">{{ 'home.ctaWhatsApp' | translate }}</span>
+          <a class="cta-alt" [href]="clinic.whatsAppUrl" target="_blank" rel="noopener">
+            {{ 'home.ctaWhatsApp' | translate }}
+          </a>
         </div>
       </div>
     </section>

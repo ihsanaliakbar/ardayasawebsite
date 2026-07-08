@@ -50,7 +50,7 @@ import { SeoService } from '../../core/seo';
               </ul>
               <p class="schedule-note">{{ 'psychologists.scheduleNote' | translate }}</p>
             }
-            <a mat-flat-button class="gold-btn" [href]="clinic.whatsAppUrl" target="_blank" rel="noopener">
+            <a mat-flat-button class="gold-btn" routerLink="/janji-temu" [queryParams]="{ psikolog: p.slug }">
               {{ 'psychologists.book' | translate }}
             </a>
           </aside>

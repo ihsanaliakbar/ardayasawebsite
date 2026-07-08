@@ -38,8 +38,8 @@ import { WibDatePipe, WibTimePipe } from '../../core/scheduling/wib';
           </div>
         } @empty {
           <p class="hint">{{ 'myBookings.empty' | translate }}</p>
-          <a mat-stroked-button routerLink="/psikolog-kami">{{ 'myBookings.browsePsychologists' | translate }}</a>
         }
+        <a mat-flat-button routerLink="/janji-temu" class="new-booking">{{ 'myBookings.newBooking' | translate }}</a>
       </mat-card>
     </div>
   `,
@@ -59,6 +59,7 @@ import { WibDatePipe, WibTimePipe } from '../../core/scheduling/wib';
       background: var(--mat-sys-surface-variant); color: var(--mat-sys-on-surface-variant);
     }
     .badge.gold { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); }
+    .new-booking { margin-top: 16px; }
   `,
 })
 export class PatientBookings implements OnInit {

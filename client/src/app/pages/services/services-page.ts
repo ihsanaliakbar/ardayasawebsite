@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -10,7 +11,7 @@ import { SeoService } from '../../core/seo';
 
 @Component({
   selector: 'app-services-page',
-  imports: [MatButtonModule, MatIconModule, TranslatePipe, IdrPipe],
+  imports: [RouterLink, MatButtonModule, MatIconModule, TranslatePipe, IdrPipe],
   template: `
     <div class="page-container page">
       <h1 class="section-title">{{ 'services.title' | translate }}</h1>
@@ -67,7 +68,7 @@ import { SeoService } from '../../core/seo';
       </p>
 
       <div class="cta">
-        <a mat-flat-button class="gold-btn" [href]="clinic.whatsAppUrl" target="_blank" rel="noopener">
+        <a mat-flat-button class="gold-btn" routerLink="/janji-temu">
           {{ 'services.cta' | translate }}
         </a>
       </div>

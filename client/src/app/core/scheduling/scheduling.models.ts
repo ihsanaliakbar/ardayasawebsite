@@ -82,9 +82,21 @@ export interface BookableService {
   notes: string | null;
 }
 
+/** A psychologist offering a given service (wizard "pilih psikolog" step). */
+export interface ServicePsychologist {
+  psychologistId: string;
+  displayName: string;
+  title: string | null;
+  specialization: string | null;
+  slug: string | null;
+  photoUrl: string | null;
+}
+
 export interface Slot {
   startUtc: string;
   endUtc: string;
+  /** Every psychologist free at this time; one entry when the query was per-psychologist. */
+  psychologistIds: string[];
 }
 
 export interface DaySlots {

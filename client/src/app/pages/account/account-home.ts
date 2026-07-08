@@ -74,7 +74,7 @@ import { AssignedPsychologist, PatientProfile } from '../../core/patients/patien
                 <a mat-stroked-button [routerLink]="['/psikolog-kami', p.slug]">
                   {{ 'account.myPsychologists.viewProfile' | translate }}
                 </a>
-                <a mat-flat-button [routerLink]="['/janji-temu', p.slug]">
+                <a mat-flat-button routerLink="/janji-temu" [queryParams]="{ psikolog: p.slug }">
                   {{ 'account.myPsychologists.book' | translate }}
                 </a>
               </span>

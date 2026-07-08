@@ -36,7 +36,7 @@ import { CLINIC } from '../core/clinic';
             } @else {
               <a mat-button routerLink="/masuk" (click)="menuOpen.set(false)">{{ 'nav.login' | translate }}</a>
             }
-            <a mat-flat-button class="cta" [href]="clinic.whatsAppUrl" target="_blank" rel="noopener">
+            <a mat-flat-button class="cta" routerLink="/janji-temu" (click)="menuOpen.set(false)">
               <mat-icon>event</mat-icon>
               {{ 'nav.book' | translate }}
             </a>
