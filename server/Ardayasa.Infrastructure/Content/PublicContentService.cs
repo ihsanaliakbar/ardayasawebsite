@@ -41,9 +41,24 @@ public class PublicContentService(AppDbContext db) : IPublicContentService
             .Select(t => new TestimonialDto(t.Id, t.AuthorName, t.RoleLabel, t.Content, t.Rating))
             .ToListAsync(ct);
 
+        // Live availability replaces the static Phase 1 schedule text once rules
+        // exist; the client falls back to ScheduleLines while Schedule is empty.
+        var schedule = (await db.AvailabilityRules
+                .AsNoTracking()
+                .Where(r => r.PsychologistId == p.Id)
+                .ToListAsync(ct))
+            .GroupBy(r => r.DayOfWeek)
+            .OrderBy(g => ((int)g.Key + 6) % 7) // Monday-first week
+            .Select(g => new ScheduleDayDto(
+                g.Key,
+                g.OrderBy(r => r.StartTime)
+                    .Select(r => new ScheduleRangeDto(r.StartTime, r.EndTime))
+                    .ToList()))
+            .ToList();
+
         return new PsychologistDetailDto(
             p.Id, p.DisplayName, p.Title, p.Slug, p.Specialization,
-            p.Education, p.Expertise, p.Bio, FileUrl.From(p.PhotoKey), p.ScheduleLines, testimonials);
+            p.Education, p.Expertise, p.Bio, FileUrl.From(p.PhotoKey), p.ScheduleLines, schedule, testimonials);
     }
 
     public async Task<IReadOnlyList<ServiceCategoryDto>> GetServiceCatalogAsync(CancellationToken ct = default)

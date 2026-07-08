@@ -33,6 +33,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     public DbSet<LogbookEntry> LogbookEntries => Set<LogbookEntry>();
 
+    public DbSet<AvailabilityRule> AvailabilityRules => Set<AvailabilityRule>();
+
+    public DbSet<AvailabilityException> AvailabilityExceptions => Set<AvailabilityException>();
+
+    public DbSet<PsychologistService> PsychologistServices => Set<PsychologistService>();
+
+    public DbSet<Booking> Bookings => Set<Booking>();
+
+    public DbSet<ClinicSetting> ClinicSettings => Set<ClinicSetting>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -174,6 +184,78 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                 .WithMany()
                 .HasForeignKey(l => l.AuthorPsychologistId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<AvailabilityRule>(e =>
+        {
+            e.HasIndex(r => r.PsychologistId);
+            e.Property(r => r.DayOfWeek).HasConversion<string>().HasMaxLength(20);
+            e.HasOne(r => r.Psychologist)
+                .WithMany()
+                .HasForeignKey(r => r.PsychologistId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<AvailabilityException>(e =>
+        {
+            e.HasIndex(x => new { x.PsychologistId, x.Date });
+            e.Property(x => x.Kind).HasConversion<string>().HasMaxLength(20);
+            e.HasOne(x => x.Psychologist)
+                .WithMany()
+                .HasForeignKey(x => x.PsychologistId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<PsychologistService>(e =>
+        {
+            // The unique index is the DB-level guarantee against duplicate mappings.
+            e.HasIndex(m => new { m.PsychologistId, m.ServiceId }).IsUnique();
+            e.HasOne(m => m.Psychologist)
+                .WithMany()
+                .HasForeignKey(m => m.PsychologistId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(m => m.Service)
+                .WithMany()
+                .HasForeignKey(m => m.ServiceId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<Booking>(e =>
+        {
+            e.Property(b => b.Mode).HasConversion<string>().HasMaxLength(20);
+            e.Property(b => b.Status).HasConversion<string>().HasMaxLength(30);
+            e.Property(b => b.PriceIdr).HasPrecision(12, 0);
+            e.Property(b => b.ZoomLink).HasMaxLength(500);
+            e.HasIndex(b => b.PatientUserId);
+            e.HasIndex(b => new { b.PsychologistId, b.StartUtc }, "IX_Bookings_Psychologist_Start");
+            // DB-level double-booking guard: only one active booking may hold a
+            // given slot start. The quoted-identifier filter works on both Npgsql
+            // (production) and SQLite (tests). A Postgres exclusion constraint in
+            // the migration additionally rejects overlapping ranges.
+            e.HasIndex(b => new { b.PsychologistId, b.StartUtc }, "IX_Bookings_ActiveSlot")
+                .IsUnique()
+                .HasFilter("\"Status\" IN ('PendingPayment', 'AwaitingVerification', 'Confirmed')");
+            // Bookings are history: they must never vanish via cascade. The Phase 5
+            // account-deletion path anonymizes them explicitly.
+            e.HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(b => b.PatientUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(b => b.Psychologist)
+                .WithMany()
+                .HasForeignKey(b => b.PsychologistId)
+                .OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(b => b.Service)
+                .WithMany()
+                .HasForeignKey(b => b.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ClinicSetting>(e =>
+        {
+            e.HasKey(s => s.Key);
+            e.Property(s => s.Key).HasMaxLength(100);
+            e.Property(s => s.Value).HasMaxLength(1000);
         });
 
         builder.Entity<AuditLog>(e =>

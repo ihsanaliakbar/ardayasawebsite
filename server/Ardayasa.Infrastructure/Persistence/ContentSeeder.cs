@@ -30,6 +30,9 @@ public static class ContentSeeder
         await SeedTestimonialsAsync(db, psychologistIds);
         await SeedArticlesAsync(db, userManager);
         await db.SaveChangesAsync();
+        await SeedPsychologistServicesAsync(db, logger);
+        await SeedClinicSettingsAsync(db);
+        await db.SaveChangesAsync();
         logger.LogInformation("Content seed completed");
     }
 
@@ -280,6 +283,83 @@ public static class ContentSeeder
     private sealed record SeedPsychologist(
         string Name, string Title, string Specialization,
         string[] Education, string[] Expertise, string Bio, string[] Schedule);
+
+    // --- Psychologist ↔ service mapping (Phase 2) ---
+    // Best-guess from the Instagram specializations (decision 2026-07-07); the
+    // admin corrects it in the admin UI. Matches by slug/name so it also works
+    // when psychologists/services were seeded on an earlier run.
+
+    private static async Task SeedPsychologistServicesAsync(AppDbContext db, ILogger logger)
+    {
+        if (await db.PsychologistServices.AnyAsync())
+        {
+            return;
+        }
+
+        var psychologists = await db.Psychologists.ToDictionaryAsync(p => p.Slug ?? string.Empty, p => p.Id);
+        var services = await db.Services.ToDictionaryAsync(s => s.Name, s => s.Id);
+
+        string[] adultClinical =
+        [
+            "Konseling Dewasa", "Psikoterapi", "Asesmen Kepribadian", "Asesmen Kesehatan Mental",
+            "Konsultasi Hasil Asesmen", "Konsultasi Hasil Skrining",
+        ];
+        var map = new Dictionary<string, string[]>
+        {
+            ["fahira-dumbi"] = adultClinical,
+            ["anna-nadia"] = [.. adultClinical, "Konseling Pasangan"],
+            ["anisa-zahra"] = [.. adultClinical, "Konseling Pasangan"],
+            ["rania-fakhirah"] =
+            [
+                "Konseling Anak — anak + orang tua", "Konseling Anak — orang tua saja", "Konseling Anak — online",
+                "Asesmen Inteligensi (IQ)", "Asesmen Kesiapan Sekolah", "Cek Tumbuh Kembang", "Asesmen Perilaku",
+                "Konsultasi Hasil Asesmen",
+            ],
+            ["aulia-z-nisa"] =
+            [
+                "Konseling Pendidikan", "Asesmen Inteligensi (IQ)", "Asesmen Minat Bakat", "Asesmen Kesiapan Sekolah",
+                "Konsultasi Hasil Asesmen", "Konsultasi Hasil Skrining",
+            ],
+        };
+
+        foreach (var (slug, serviceNames) in map)
+        {
+            if (!psychologists.TryGetValue(slug, out var psychologistId))
+            {
+                logger.LogWarning("Service-mapping seed: psychologist {Slug} not found, skipping", slug);
+                continue;
+            }
+
+            foreach (var name in serviceNames)
+            {
+                if (!services.TryGetValue(name, out var serviceId))
+                {
+                    logger.LogWarning("Service-mapping seed: service {Name} not found, skipping", name);
+                    continue;
+                }
+
+                db.PsychologistServices.Add(new PsychologistService
+                {
+                    Id = Guid.NewGuid(),
+                    PsychologistId = psychologistId,
+                    ServiceId = serviceId,
+                });
+            }
+        }
+    }
+
+    // --- Clinic settings (Phase 2) ---
+
+    private static async Task SeedClinicSettingsAsync(AppDbContext db)
+    {
+        if (await db.ClinicSettings.AnyAsync())
+        {
+            return;
+        }
+
+        // Slot buffer default 0 minutes, confirmed by Ihsan 2026-07-07.
+        db.ClinicSettings.Add(new ClinicSetting { Key = "SlotBufferMinutes", Value = "0" });
+    }
 
     // --- Testimonials (generated examples — fictional, replaceable via admin CMS) ---
 

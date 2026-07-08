@@ -20,7 +20,17 @@ public record PsychologistDetailDto(
     string? Bio,
     string? PhotoUrl,
     IReadOnlyList<string> ScheduleLines,
+    IReadOnlyList<ScheduleDayDto> Schedule,
     IReadOnlyList<TestimonialDto> Testimonials);
+
+/// <summary>
+/// Availability-derived practice schedule (WIB wall-clock times). When empty the
+/// client falls back to the static <see cref="PsychologistDetailDto.ScheduleLines"/>;
+/// day names are translated client-side (user-facing text never originates server-side).
+/// </summary>
+public record ScheduleDayDto(DayOfWeek DayOfWeek, IReadOnlyList<ScheduleRangeDto> Ranges);
+
+public record ScheduleRangeDto(TimeOnly StartTime, TimeOnly EndTime);
 
 public record ServiceDto(
     Guid Id,
